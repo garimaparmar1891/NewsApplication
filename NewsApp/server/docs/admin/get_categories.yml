@@ -1,0 +1,23 @@
+
+tags:
+  - Admin
+summary: Get all news categories
+security:
+  - Bearer: []
+responses:
+  200:
+    description: List of categories
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string

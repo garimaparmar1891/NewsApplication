@@ -1,0 +1,22 @@
+
+tags:
+  - Admin
+summary: Add a new news category
+security:
+  - Bearer: []
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+responses:
+  201:
+    description: Category added
+  400:
+    description: Category already exists

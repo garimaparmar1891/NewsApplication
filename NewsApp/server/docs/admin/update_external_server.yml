@@ -1,0 +1,29 @@
+tags:
+  - Admin - External Servers
+summary: Update an external server
+parameters:
+  - name: server_id
+    in: path
+    required: true
+    type: integer
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        Name:
+          type: string
+        Api_key:
+          type: string
+        Base_Url:
+          type: string
+        Is_Active:
+          type: boolean
+responses:
+  200:
+    description: Server updated successfully
+  400:
+    description: Failed to update server
+security:
+  - Bearer: []

@@ -1,0 +1,24 @@
+
+tags:
+  - Admin
+summary: Add a new external server
+security:
+  - Bearer: []
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        apiKey:
+          type: string
+responses:
+  201:
+    description: External server added successfully
+  400:
+    description: Bad request

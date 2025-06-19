@@ -1,0 +1,30 @@
+tags:
+  - Auth
+summary: User Login
+description: API endpoint to authenticate a user and return a JWT token.
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+          example: garima@gmail.com
+        password:
+          type: string
+          example: garima
+responses:
+  200:
+    description: Login successful
+    schema:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT access token
+  401:
+    description: Invalid credentials
+  400:
+    description: Missing required fields

@@ -1,0 +1,30 @@
+
+tags:
+  - Admin
+summary: Get list of external news servers
+security:
+  - Bearer: []
+responses:
+  200:
+    description: A list of external servers
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              apiKey:
+                type: string
+              isActive:
+                type: boolean
+              lastAccessed:
+                type: string
+                format: date-time

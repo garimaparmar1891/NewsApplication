@@ -1,0 +1,16 @@
+
+tags:
+  - Admin
+summary: Delete an external server by ID
+security:
+  - Bearer: []
+parameters:
+  - in: path
+    name: server_id
+    type: integer
+    required: true
+responses:
+  200:
+    description: External server deleted
+  404:
+    description: Server not found

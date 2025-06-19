@@ -1,0 +1,39 @@
+tags:
+  - Auth
+summary: User Signup
+description: API endpoint to register a new user account.
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: johndoe
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        password:
+          type: string
+          format: password
+          example: secret123
+responses:
+  201:
+    description: User registered successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User registered successfully
+  400:
+    description: Invalid input or user already exists
+  500:
+    description: Internal server error
