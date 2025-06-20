@@ -1,0 +1,40 @@
+tags:
+  - Notifications
+summary: Update category preferences and keywords
+description: Allows the user to enable/disable categories and add keywords for each category.
+security:
+  - Bearer: []
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              categoryId:
+                type: integer
+              isEnabled:
+                type: boolean
+              keywords:
+                type: array
+                items:
+                  type: string
+responses:
+  200:
+    description: Preferences updated successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+  400:
+    description: Invalid request or failed to update preferences
+  401:
+    description: Unauthorized

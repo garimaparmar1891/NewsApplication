@@ -1,0 +1,63 @@
+tags:
+  - Articles
+summary: Search articles by keyword and date range
+description: Returns a list of articles that match the given keyword and were published between start_date and end_date.
+parameters:
+  - name: q
+    in: query
+    required: true
+    type: string
+    description: Keyword to search in title or content
+  - name: start_date
+    in: query
+    required: true
+    type: string
+    format: date
+    description: Start date in YYYY-MM-DD
+  - name: end_date
+    in: query
+    required: true
+    type: string
+    format: date
+    description: End date in YYYY-MM-DD
+responses:
+  200:
+    description: Successfully found articles
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Success
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 123
+              title:
+                type: string
+                example: Example News Title
+              source:
+                type: string
+                example: newsapi
+              url:
+                type: string
+                example: https://example.com/article/123
+              category:
+                type: string
+                example: Technology
+              publishedAt:
+                type: string
+                example: 2025-06-17 08:00
+  400:
+    description: Missing or invalid parameters
+  404:
+    description: No articles found
+  500:
+    description: Internal server error

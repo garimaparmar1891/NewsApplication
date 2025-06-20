@@ -6,23 +6,26 @@ from http import HTTPStatus
 
 class RoleRequired:
     def __init__(self, role):
-        self.required_role = role
+        self.role = role
 
     def __call__(self, fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
-            verify_jwt_in_request()
-            claims = get_jwt()
-
-            user_role = claims.get("role")
-            if user_role != self.required_role:
-                return jsonify({
-                    "success": False,
-                    "message": f"{self.required_role} access required"
-                }), HTTPStatus.FORBIDDEN
-
+            if not self._has_required_role():
+                return self._forbidden_response()
             return fn(*args, **kwargs)
         return wrapper
+
+    def _has_required_role(self):
+        verify_jwt_in_request()
+        claims = get_jwt()
+        return claims.get("role") == self.role
+
+    def _forbidden_response(self):
+        return jsonify({
+            "success": False,
+            "message": f"{self.role} access required"
+        }), HTTPStatus.FORBIDDEN
 
 
 admin_required = RoleRequired("Admin")

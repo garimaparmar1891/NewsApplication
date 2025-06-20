@@ -1,16 +1,17 @@
 from utils.db import get_db_connection
+from queries import external_server_queries as q
 
 class ExternalServerRepository:
     def get_keys(self):
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT Name, ApiKey, IsActive, LastAccessed, BaseUrl FROM ExternalServers")
+            cursor.execute(q.GET_ALL_KEYS)
             rows = cursor.fetchall()
 
             keys = {}
             for row in rows:
                 keys[row.Name] = {
-                    "name" : row.Name,
+                    "name": row.Name,
                     "api_key": row.ApiKey,
                     "is_active": row.IsActive,
                     "last_accessed": row.LastAccessed,
@@ -21,12 +22,7 @@ class ExternalServerRepository:
     def get_active_sources(self):
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""
-                SELECT Name, ApiKey, IsActive, BaseUrl
-                FROM ExternalServers
-                WHERE IsActive = 1
-                ORDER BY Id ASC
-            """)
+            cursor.execute(q.GET_ACTIVE_SOURCES)
             rows = cursor.fetchall()
             return [
                 {

@@ -1,0 +1,28 @@
+tags:
+  - Notifications
+summary: Get notifications since the user's last login
+description: Fetches unread notifications for the user since their last login and marks them as read.
+security:
+  - Bearer: []
+responses:
+  200:
+    description: List of new notifications
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+  404:
+    description: No notifications found
+  401:
+    description: Unauthorized

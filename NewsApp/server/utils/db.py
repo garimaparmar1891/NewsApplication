@@ -1,4 +1,3 @@
-
 import os
 import pyodbc
 from dotenv import load_dotenv
@@ -15,5 +14,5 @@ def get_db_connection():
         )
         return pyodbc.connect(connection_string)
     except pyodbc.Error as e:
-        print(f"❌ Database connection failed: {e}")
+        print(f"Database connection failed: {e}")
         raise

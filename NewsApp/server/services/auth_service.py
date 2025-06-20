@@ -10,7 +10,7 @@ class AuthService:
         self.login_repo = LoginHistoryRepository()
         self.bcrypt = bcrypt_instance or Bcrypt()
 
-    def signup(self, username, email, password):
+    def signup(self, username: str, email: str, password: str) -> Dict[str, Union[str, int]]:
         if self.repo.get_user_by_email(email):
             return {"error": "User already exists", "status": 400}
 
@@ -19,11 +19,12 @@ class AuthService:
 
         return {"message": "User registered successfully", "status": 201}
 
-    def login(self, email, password):
+    def login(self, email: str, password: str) -> Optional[Dict[str, Union[int, str]]]:
         user = self.repo.get_user_by_email(email)
         if user and self.bcrypt.check_password_hash(user["PasswordHash"], password):
             return user
         return None
 
-    def record_login(self, user_id):
+    def record_login(self, user_id: int) -> None:
         self.login_repo.record_login(user_id)
+

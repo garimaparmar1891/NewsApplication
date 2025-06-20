@@ -5,21 +5,19 @@ from flask_jwt_extended import (
 )
 from datetime import timedelta
 
+
 class JWTManagerHelper:
     def __init__(self, expiry_days=1):
-        self.expiry = timedelta(days=expiry_days)
+        self._expiry = timedelta(days=expiry_days)
 
-    def generate_token(self, user_id: int) -> str:
-        """Generate a JWT token for the given user ID."""
-        return create_access_token(identity=user_id, expires_delta=self.expiry)
+    def generate_token(self, user_id):
+        return create_access_token(identity=user_id, expires_delta=self._expiry)
 
-    def get_user_id(self) -> int:
-        """Extract user ID from JWT token."""
+    def get_user_id(self):
         return get_jwt_identity()
 
     @property
     def jwt_required(self):
-        """Expose the Flask JWT-required decorator."""
         return flask_jwt_required
 
 jwt_manager = JWTManagerHelper()

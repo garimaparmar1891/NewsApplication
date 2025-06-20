@@ -1,0 +1,35 @@
+tags:
+  - Articles
+summary: Get articles by date range and optional category
+parameters:
+  - in: query
+    name: start_date
+    required: true
+    schema:
+      type: string
+      format: date
+    description: Start date in YYYY-MM-DD format
+  - in: query
+    name: end_date
+    required: true
+    schema:
+      type: string
+      format: date
+    description: End date in YYYY-MM-DD format
+  - in: query
+    name: category
+    required: false
+    schema:
+      type: string
+    description: Category name to filter
+responses:
+  200:
+    description: List of articles in range
+  400:
+    description: Bad Request
+  404:
+    description: No articles found
+  500:
+    description: Internal server error
+security:
+  - Bearer: []

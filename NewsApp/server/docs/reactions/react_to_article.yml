@@ -1,0 +1,38 @@
+tags:
+  - Reactions
+summary: React to an article
+description: Adds or updates a user's reaction (like/dislike) to a specific article.
+security:
+  - Bearer: []
+parameters:
+  - name: article_id
+    in: path
+    required: true
+    schema:
+      type: integer
+    description: ID of the article to react to
+  - name: reaction_type
+    in: path
+    required: true
+    schema:
+      type: string
+      enum: [like, dislike]
+    description: Type of reaction ("like" or "dislike")
+responses:
+  200:
+    description: Reaction added or updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            success:
+              type: boolean
+              example: true
+            message:
+              type: string
+              example: Reaction recorded successfully
+  400:
+    description: Invalid reaction type
+  401:
+    description: Unauthorized

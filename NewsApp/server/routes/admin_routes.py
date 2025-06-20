@@ -25,7 +25,6 @@ def add_external_server():
 def update_external_server(server_id):
     return admin_controller.update_external_server(server_id)
 
-
 @admin_bp.route("/api/admin/external-servers/<int:server_id>", methods=["DELETE"])
 @admin_required
 @swag_from("../docs/admin/delete_external_server.yml")

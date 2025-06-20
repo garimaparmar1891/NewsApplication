@@ -1,0 +1,12 @@
+
+summary: Get user's article reactions
+description: Fetch all articles the authenticated user has reacted to.
+tags:
+  - Reactions
+security:
+  - Bearer: []
+responses:
+  200:
+    description: A list of reactions
+  401:
+    description: Unauthorized

@@ -1,0 +1,28 @@
+
+tags:
+  - Keywords
+summary: Get all keywords for the logged-in user
+security:
+  - Bearer: []
+responses:
+  200:
+    description: List of keywords
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              keyword:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+  401:
+    description: Unauthorized - JWT missing or invalid

@@ -1,0 +1,19 @@
+
+tags:
+  - User - Saved Articles
+summary: Unsave an article by ID
+security:
+  - Bearer: []
+parameters:
+  - name: article_id
+    in: path
+    required: true
+    type: integer
+    description: ID of the article to unsave
+responses:
+  200:
+    description: Article unsaved successfully
+  404:
+    description: Article not found in saved list
+  401:
+    description: Unauthorized - JWT missing or invalid

@@ -1,0 +1,18 @@
+
+tags:
+  - Articles
+summary: Save an article to the user’s saved list
+security:
+  - Bearer: []
+parameters:
+  - name: article_id
+    in: path
+    required: true
+    type: integer
+responses:
+  200:
+    description: Article saved successfully
+  400:
+    description: Already saved or invalid request
+  401:
+    description: Unauthorized - JWT token missing or invalid

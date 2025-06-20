@@ -1,17 +1,18 @@
 from utils.http_client import authorized_request
 
 def view_all_external_servers():
-    print("\n---  External Servers List ---")
+    print("\n--- External Servers List ---")
     response = authorized_request("GET", "/api/admin/external-servers")
     print(response)
     if response.ok:
         servers = response.json().get("data", [])
+        print(servers)
         if not servers:
-            print(" No external servers found.")
+            print("No external servers found.")
         else:
             for idx, server in enumerate(servers, start=1):
-                print(f"\n[{idx}] Server: {server.get('Name')}")
-                print(f"Active         : {' Yes' if server.get('Is_Active') else ' No'}")
+                print(f"\n[{idx}] Server: {server.get('name')}")
+                print(f"Active         : {'Yes' if server.get('is_active') else 'No'}")
                 print(f"Last Accessed  : {server.get('last_Accessed')}")
                 print("-" * 50)
     else:
@@ -22,9 +23,9 @@ def view_external_server_details():
     if response.ok:
         server = response.json().get("data", {})
         for idx, server in enumerate(server, start=1):
-            print(f"\n Server Details ")
-            print(f"\n[{idx}] Server: {server.get('Name')}")
-            print(f"API Key        : {server.get('Api_key')}")
+            print(f"\nServer Details ")
+            print(f"\n[{idx}] Server: {server.get('name')}")
+            print(f"API Key        : {server.get('api_key')}")
     else:
         print("Failed to fetch server details:", response.json().get("message", "Unknown error"))
 

@@ -1,0 +1,28 @@
+
+tags:
+  - Articles
+summary: Get today's news headlines
+responses:
+  200:
+    description: List of today's headlines
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              title:
+                type: string
+              content:
+                type: string
+              source:
+                type: string
+              publishedAt:
+                type: string
+                format: date-time

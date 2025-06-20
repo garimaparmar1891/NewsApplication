@@ -1,21 +1,21 @@
 from utils.db import get_db_connection
 from queries import admin_queries
+from datetime import datetime
 
 
 class AdminRepository:
-
     def get_external_servers(self):
         with get_db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(admin_queries.GET_EXTERNAL_SERVERS)
             return [
                 {
-                    "Id": row.Id,
-                    "Name": row.Name,
-                    "Api_key": row.ApiKey,
-                    "Base_Url": row.BaseUrl,
-                    "Is_Active": row.IsActive,
-                    "last_Accessed": row.LastAccessed
+                    "id": row.Id,
+                    "name": row.Name,
+                    "api_key": row.ApiKey,
+                    "base_url": row.BaseUrl,
+                    "is_active": row.IsActive,
+                    "last_accessed": row.LastAccessed
                 }
                 for row in cursor.fetchall()
             ]
@@ -54,7 +54,45 @@ class AdminRepository:
             "[DB ERROR] delete_category"
         )
 
-    # ---------- Private Helpers ----------
+    def update_external_server(self, server_id, data):
+        update_fields = []
+        params = []
+
+        if "Name" in data:
+            update_fields.append("Name = ?")
+            params.append(data["Name"])
+
+        if "Api_key" in data:
+            update_fields.append("ApiKey = ?")
+            params.append(data["Api_key"])
+
+        if "Base_Url" in data:
+            update_fields.append("BaseUrl = ?")
+            params.append(data["Base_Url"])
+
+        if "Is_Active" in data:
+            update_fields.append("IsActive = ?")
+            params.append(int(data["Is_Active"]))
+
+        update_fields.append("LastAccessed = ?")
+        params.append(datetime.now())
+
+        if not update_fields:
+            return False
+
+        params.append(server_id)
+        sql = admin_queries.UPDATE_EXTERNAL_SERVER_BASE.format(fields=", ".join(update_fields))
+
+        try:
+            with get_db_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql, params)
+                conn.commit()
+                return True
+        except Exception as e:
+            print(f"[DB ERROR] update_external_server: {e}")
+            return False
+
     def _execute_write_query(self, query, params, error_msg):
         try:
             with get_db_connection() as conn:
@@ -76,47 +114,3 @@ class AdminRepository:
         except Exception as e:
             print(f"{error_msg}: {e}")
             return False
-
-
-    def update_external_server(self, server_id, data):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        update_fields = []
-        params = []
-
-        if "Name" in data:
-            update_fields.append("Name = ?")
-            params.append(data["Name"])
-
-        if "Api_key" in data:
-            update_fields.append("ApiKey = ?")
-            params.append(data["Api_key"])
-
-        if "Base_Url" in data:
-            update_fields.append("BaseUrl = ?")
-            params.append(data["Base_Url"])
-
-        if "Is_Active" in data:
-            update_fields.append("IsActive = ?")
-            params.append(int(data["Is_Active"]))
-
-        if not update_fields:
-            return False  # nothing to update
-
-        params.append(server_id)
-
-        sql = f"""
-            UPDATE ExternalServers
-            SET {', '.join(update_fields)}
-            WHERE Id = ?
-        """
-        try:
-            cursor.execute(sql, params)
-            conn.commit()
-            return True
-        except Exception as e:
-            print(f"DB Error while updating server: {e}")
-            return False
-        finally:
-            conn.close()

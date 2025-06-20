@@ -13,8 +13,10 @@ def login():
             "password": password
         }
     )
+
     try:
         data = response.json()
+
     except ValueError:
         print("Login failed: Invalid response format.")
         return None
