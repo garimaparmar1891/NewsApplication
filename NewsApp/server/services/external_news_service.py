@@ -1,7 +1,7 @@
 from repositories.article_repository import ArticleRepository
 from repositories.admin_repository import AdminRepository
 from repositories.keyword_repository import KeywordRepository
-from services.email_notification_service import EmailNotificationService
+from services.notification_service import NotificationService
 from utils.handlers.newsapi_handler import NewsAPIHandler
 from utils.handlers.thenewsapi_handler import TheNewsAPIHandler
 
@@ -11,7 +11,7 @@ class ExternalNewsService:
         self.article_repo = ArticleRepository()
         self.admin_repo = AdminRepository()
         self.keyword_repo = KeywordRepository()
-        self.email_service = EmailNotificationService()
+        self.notification_service = NotificationService()
 
         self.handler_registry = {
             "newsapi": NewsAPIHandler(),
@@ -25,41 +25,43 @@ class ExternalNewsService:
         self.keywords = self.keyword_repo.get_all_keywords()
 
     def fetch_and_store_all(self):
-        print("📱 API fetch job triggered.")
         sources = self.admin_repo.get_external_servers()
+        total_inserted = 0
+        user_notification_count = {}
+
         for source in sources:
             if not source.get("is_active"):
-                print(f"Skipping inactive source: {source.get('name')}")
                 continue
 
             inserted_ids = self._handle_source(source)
+            total_inserted += len(inserted_ids)
 
             if inserted_ids:
-                self.email_service.send_notifications()
-                print(f"Inserted {len(inserted_ids)} articles from {source['name']}. Sending notifications...")
-                return 
+                users = self.notification_service.repo.get_users_with_enabled_preferences()
+                for user in users:
+                    user_id = user.get("user_id")
+                    if not user_id:
+                        continue
 
-            print(f"No articles inserted from {source['name']}, trying next...")
+                    result = self.notification_service.send_email_notifications(user_id)
+                    if result.get("sent_count"):
+                        user_notification_count[user["email"]] = result["sent_count"]
 
-        print("All active sources failed. No news fetched.")
+        self._log_summary(total_inserted, user_notification_count)
 
 
-    # ---------- Private Helpers ----------
     def _handle_source(self, source):
         name = source["name"].lower()
         handler = self.handler_registry.get(name)
 
         if not handler:
-            print(f"No handler registered for: {name}")
             return []
 
         try:
             if name == "newsapi":
                 return self._handle_newsapi_source(source, handler)
-            else:
-                return self._handle_generic_source(source, handler)
-        except Exception as e:
-            print(f"Error fetching from {name}: {e}")
+            return self._handle_generic_source(source, handler)
+        except Exception:
             return []
 
     def _handle_newsapi_source(self, source, handler):
@@ -73,9 +75,8 @@ class ExternalNewsService:
                 articles = self._build_articles(raw_articles, source, category["id"])
                 inserted_ids = self.article_repo.bulk_insert_articles(articles)
                 all_inserted_ids.extend(inserted_ids)
-                print(f"Inserted {len(inserted_ids)} articles for category: {category['name']}")
-            except Exception as e:
-                print(f"Failed to fetch {category['name']} from NewsAPI: {e}")
+            except Exception:
+                continue
 
         return all_inserted_ids
 
@@ -96,7 +97,6 @@ class ExternalNewsService:
                 "server_id": server_id
             })
 
-        print(f"Inserting {len(articles)} articles from {source['name']}")
         return self.article_repo.bulk_insert_articles(articles)
 
     def _build_articles(self, raw_articles, source, category_id):
@@ -127,5 +127,16 @@ class ExternalNewsService:
             if keyword["word"].lower() in combined_text:
                 return keyword["category_id"]
 
-        return 1
+        return 1  
+    
 
+    def _log_summary(self, total_inserted, user_notification_count):
+        if total_inserted:
+            print(f"Total articles inserted: {total_inserted}")
+        else:
+            print("No articles were inserted from any source.")
+
+        if user_notification_count:
+            print("Notification summary:")
+            for email, count in user_notification_count.items():
+                print(f" - {email}: {count} articles notified")

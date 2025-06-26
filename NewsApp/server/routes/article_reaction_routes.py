@@ -19,10 +19,3 @@ def react_to_article(article_id, reaction_type):
 @swag_from("../docs/reactions/get_user_reactions.yml")
 def get_user_reactions():
     return reaction_controller.get_user_reactions()
-
-# ---------- Delete a reaction ----------
-@reaction_bp.route("/api/reactions/<int:article_id>", methods=["DELETE"])
-@user_required
-@swag_from("../docs/reactions/delete_reaction.yml")
-def delete_reaction(article_id):
-    return reaction_controller.delete_reaction(article_id)

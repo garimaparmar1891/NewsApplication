@@ -23,12 +23,5 @@ class ArticleReactionController:
         reactions = self.reaction_service.get_user_reactions(user_id)
         return success_response(data=reactions)
 
-    def delete_reaction(self, article_id):
-        user_id = get_jwt_identity()
-        if self.reaction_service.delete_reaction(user_id, article_id):
-            return success_response(message="Reaction deleted successfully")
-
-        return error_response("Reaction not found", HTTPStatus.NOT_FOUND)
-
     def _is_valid_reaction(self, reaction_type):
         return reaction_type in {"like", "dislike"}

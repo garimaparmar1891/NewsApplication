@@ -1,6 +1,6 @@
 
 tags:
-  - Keywords
+  - User-Keyword
 summary: Get all keywords for the logged-in user
 security:
   - Bearer: []

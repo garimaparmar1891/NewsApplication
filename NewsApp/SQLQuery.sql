@@ -1,0 +1,133 @@
+-- USERS & ROLES
+CREATE TABLE Users (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(255) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(10) NOT NULL CHECK (Role IN ('Admin', 'User')),
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+-- CATEGORIES
+CREATE TABLE Categories (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL UNIQUE
+);
+
+-- EXTERNAL SERVERS
+CREATE TABLE ExternalServers (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    ApiKey NVARCHAR(255),
+    IsActive BIT NOT NULL DEFAULT 1,
+    LastAccessed DATETIME,
+	BaseUrl NVARCHAR(255) NOT NULL DEFAULT ''
+);
+
+-- ARTICLES
+CREATE TABLE Articles (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(MAX) NOT NULL,
+    Content NVARCHAR(MAX),
+    Source NVARCHAR(255),
+    Url NVARCHAR(1000),
+    CategoryId INT FOREIGN KEY REFERENCES Categories(Id),
+    PublishedAt DATETIME,
+    ServerId INT FOREIGN KEY REFERENCES ExternalServers(Id)
+);
+
+-- SAVED ARTICLES
+CREATE TABLE SavedArticles (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    ArticleId INT FOREIGN KEY REFERENCES Articles(Id),
+    SavedAt DATETIME DEFAULT GETDATE(),
+    CONSTRAINT UQ_User_Article UNIQUE (UserId, ArticleId)
+);
+
+-- ARTICLE REACTIONS (Like/Dislike)
+CREATE TABLE ArticleReactions (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    ArticleId INT FOREIGN KEY REFERENCES Articles(Id),
+    ReactionType NVARCHAR(10) NOT NULL CHECK (ReactionType IN ('like', 'dislike')),
+    ReactedAt DATETIME DEFAULT GETDATE(),
+    CONSTRAINT UQ_User_Article_Reaction UNIQUE (UserId, ArticleId)
+);
+
+-- NOTIFICATIONS
+CREATE TABLE Notifications (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    ArticleId INT FOREIGN KEY REFERENCES Articles(Id),
+    Message NVARCHAR(MAX),
+    IsRead BIT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+-- NOTIFICATION PREFERENCES
+CREATE TABLE NotificationPreferences (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    CategoryId INT FOREIGN KEY REFERENCES Categories(Id),
+    IsEnabled BIT DEFAULT 1,
+    CONSTRAINT UQ_User_Category UNIQUE (UserId, CategoryId)
+);
+
+-- USER KEYWORDS
+CREATE TABLE UserKeywords (
+    Id INT PRIMARY KEY IDENTITY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    CategoryId INT FOREIGN KEY REFERENCES Categories(Id),
+    Keyword NVARCHAR(100),
+    UNIQUE(UserId, CategoryId, Keyword)
+);
+
+-- LOGIN HISTORY
+CREATE TABLE LoginHistory (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    LoginTime DATETIME DEFAULT GETDATE(),
+);
+
+
+CREATE TABLE Keywords (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    CategoryId INT FOREIGN KEY REFERENCES Categories(Id),
+    Word NVARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE SentNotifications (
+    Id INT IDENTITY PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    ArticleId INT FOREIGN KEY REFERENCES Articles(Id),
+    SentAt DATETIME DEFAULT GETDATE(),
+    CONSTRAINT UQ_SentNotifications_User_Article UNIQUE (UserId, ArticleId)
+);
+
+
+CREATE TABLE ArticleReadHistory (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    ArticleId INT FOREIGN KEY REFERENCES Articles(Id),
+    ReadAt DATETIME DEFAULT GETDATE()
+);
+
+CREATE TABLE ReportedArticles (
+    Id INT PRIMARY KEY IDENTITY,
+    ArticleId INT FOREIGN KEY REFERENCES Articles(Id),
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    Reason NVARCHAR(255),
+    ReportedAt DATETIME DEFAULT GETDATE()
+);
+
+
+ALTER TABLE Articles ADD IsHidden BIT DEFAULT 0;
+
+ALTER TABLE Categories ADD IsHidden BIT DEFAULT 0;
+
+CREATE TABLE BlockedKeywords (
+    Id INT PRIMARY KEY IDENTITY,
+    Keyword NVARCHAR(100)
+);

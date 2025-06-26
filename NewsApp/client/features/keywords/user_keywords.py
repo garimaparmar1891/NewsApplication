@@ -1,14 +1,27 @@
 from utils.http_client import authorized_request
+from utils.endpoints import (
+    ADD_USER_KEYWORD,
+    GET_USER_KEYWORDS,
+    DELETE_USER_KEYWORD
+)
+
 
 def add_user_keyword():
     print("\n--- Add User Keyword ---")
-    keyword = input("Enter a keyword to track: ").strip()
+    keyword = prompt_user_keyword()
     if not keyword:
         print("Keyword cannot be empty.")
         return
+    response = send_add_user_keyword_request(keyword)
+    print_add_user_keyword_status(response)
 
-    response = authorized_request("POST", "/api/user-keywords", json={"keyword": keyword})
+def prompt_user_keyword():
+    return input("Enter a keyword to track: ").strip()
 
+def send_add_user_keyword_request(keyword):
+    return authorized_request("POST", ADD_USER_KEYWORD, json={"keyword": keyword})
+
+def print_add_user_keyword_status(response):
     if response.ok:
         print("Keyword added successfully.")
     else:
@@ -17,8 +30,13 @@ def add_user_keyword():
 
 def view_user_keywords():
     print("\n--- Your Tracked Keywords ---")
-    response = authorized_request("GET", "/api/user-keywords")
+    response = send_view_user_keywords_request()
+    print_view_user_keywords_status(response)
 
+def send_view_user_keywords_request():
+    return authorized_request("GET", GET_USER_KEYWORDS)
+
+def print_view_user_keywords_status(response):
     if response.ok:
         keywords = response.json().get("data", [])
         if not keywords:
@@ -32,13 +50,20 @@ def view_user_keywords():
 
 def delete_user_keyword():
     print("\n--- Delete User Keyword ---")
-    keyword_id = input("Enter the Keyword ID to delete: ").strip()
+    keyword_id = prompt_keyword_id()
     if not keyword_id.isdigit():
         print("Invalid ID.")
         return
+    response = send_delete_user_keyword_request(keyword_id)
+    print_delete_user_keyword_status(response)
 
-    response = authorized_request("DELETE", f"/api/user-keywords/{keyword_id}")
+def prompt_keyword_id():
+    return input("Enter the Keyword ID to delete: ").strip()
 
+def send_delete_user_keyword_request(keyword_id):
+    return authorized_request("DELETE", DELETE_USER_KEYWORD.format(keyword_id=keyword_id))
+
+def print_delete_user_keyword_status(response):
     if response.ok:
         print("Keyword deleted successfully.")
     else:

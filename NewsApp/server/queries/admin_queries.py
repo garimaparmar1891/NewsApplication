@@ -28,8 +28,16 @@ DELETE_CATEGORY = """
     WHERE Id = ?
 """
 
-UPDATE_EXTERNAL_SERVER_BASE = """
+UPDATE_EXTERNAL_SERVER = """
     UPDATE ExternalServers
     SET {fields}
     WHERE Id = ?
+"""
+
+GET_CATEGORY_BY_ID = """
+    SELECT * FROM Categories WHERE Id = ?
+"""
+
+HIDE_CATEGORY_BY_ID = """
+    UPDATE Categories SET IsHidden = 1 WHERE Id = ?
 """

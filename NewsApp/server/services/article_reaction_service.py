@@ -11,14 +11,7 @@ class ArticleReactionService:
             "article_id": article_id,
             "reaction_type": reaction_type
         }
-        return self.repo.add_or_update_reaction(data)
+        return self.repo.react_to_article(data)
 
     def get_user_reactions(self, user_id):
-        return self.repo.get_reactions_by_user(user_id)
-
-    def delete_reaction(self, user_id, article_id):
-        data = {
-            "user_id": user_id,
-            "article_id": article_id
-        }
-        return self.repo.delete_reaction(data)
+        return self.repo.get_user_reactions(user_id)

@@ -1,0 +1,18 @@
+
+tags:
+  - Admin
+summary: Delete a keyword by ID for the logged-in user
+security:
+  - Bearer: []
+parameters:
+  - name: keyword_id
+    in: path
+    required: true
+    type: integer
+responses:
+  200:
+    description: Keyword deleted successfully
+  404:
+    description: Keyword not found
+  401:
+    description: Unauthorized - JWT missing or invalid

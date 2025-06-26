@@ -1,0 +1,56 @@
+# ------------------- Base URL -------------------
+BASE_URL = "http://localhost:5000"
+
+# ------------------- Category Endpoints -------------------
+ADD_CATEGORY = "/api/admin/categories"
+GET_CATEGORIES = "/api/categories"
+
+# ------------------- Article Endpoints -------------------
+TODAY_HEADLINES = "/api/articles/today"
+GET_ARTICLES_BY_RANGE = "/api/articles/range"
+SEARCH_ARTICLES = "/api/articles/search"
+SAVE_ARTICLE = "/api/articles/{article_id}/save"
+UNSAVE_ARTICLE = "/api/articles/{article_id}/unsave"
+REPORT_ARTICLE = "/api/articles/{article_id}/report"
+READ_HISTORY = "/api/history/{article_id}"
+LIKE_ARTICLE = "/api/reactions/{article_id}/like"
+DISLIKE_ARTICLE = "/api/reactions/{article_id}/dislike"
+GET_SAVED_ARTICLES = "/api/users/saved-articles"
+
+# ------------------- Reaction Endpoints -------------------
+REACT_TO_ARTICLE = "/api/reactions/{article_id}/{reaction}"
+GET_USER_REACTIONS = "/api/reactions"
+DELETE_REACTION = "/api/reactions/{article_id}"
+
+# ------------------- Notification Endpoints -------------------
+GET_NOTIFICATIONS = "/api/notifications"
+GET_NOTIFICATION_PREFERENCES = "/api/notifications/preferences"
+UPDATE_NOTIFICATION_PREFERENCES = "/api/notifications/preferences"
+ADD_NOTIFICATION_KEYWORD = "/api/notifications/keywords"
+GET_NOTIFICATION_KEYWORDS = "/api/notifications/keywords"
+DELETE_NOTIFICATION_KEYWORD = "/api/notifications/keywords/{keyword_id}"
+
+# ------------------- User Keyword Endpoints -------------------
+ADD_USER_KEYWORD = "/api/user-keywords"
+GET_USER_KEYWORDS = "/api/user-keywords"
+DELETE_USER_KEYWORD = "/api/user-keywords/{keyword_id}"
+
+# ------------------- Keyword Endpoints -------------------
+KEYWORDS = "/api/keywords"
+
+# ------------------- Auth Endpoints -------------------
+LOGIN = "/api/login"
+SIGNUP = "/api/signup"
+
+# ------------------- Admin/External Server Endpoints -------------------
+GET_EXTERNAL_SERVERS = "/api/admin/external-servers"
+UPDATE_EXTERNAL_SERVER = "/api/admin/external-servers"
+
+# ------------------- Blocked Keyword Endpoints -------------------
+ADD_BLOCKED_KEYWORD = "/api/admin/blocked-keywords"
+GET_BLOCKED_KEYWORDS = "/api/admin/blocked-keywords"
+
+# ------------------- Report/Moderation Endpoints -------------------
+GET_REPORTS = "/api/admin/reports"
+HIDE_UNHIDE_ARTICLE = "/api/admin/articles/{article_id}/{action}"
+HIDE_UNHIDE_CATEGORY = "/api/admin/categories/{category_id}/{action}"

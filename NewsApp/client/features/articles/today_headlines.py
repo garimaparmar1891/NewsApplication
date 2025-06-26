@@ -1,32 +1,24 @@
 from utils.http_client import authorized_request
-from utils.pagination import paginate_articles
+from utils.paginated_menu import interactive_paginated_menu
+from utils.endpoints import TODAY_HEADLINES
+
 def get_today_headlines():
     print("\n--- Today's Headlines ---")
-    response = authorized_request("GET", "/api/articles/today")
-
+    response = fetch_today_headlines()
     if not response.ok:
-        print("Failed to fetch today's headlines:", response.json().get("message", response.text))
+        print_error(response.json().get("message", response.text))
         return
-
     articles = response.json().get("data", [])
-    
+    display_headlines(articles)
+
+def fetch_today_headlines():
+    return authorized_request("GET", TODAY_HEADLINES)
+
+def print_error(message):
+    print(f"{message}")
+
+def display_headlines(articles):
     if not articles:
         print("No headlines available today.")
         return
-    else:
-        paginate_articles(articles)
-
-
-    while True:
-        choice = input("\nEnter article number to save or 'q' to go back: ").strip()
-        if choice.lower() == "q":
-            break
-        if choice.isdigit() and 1 <= int(choice) <= len(articles):
-            article_id = articles[int(choice) - 1]["Id"]
-            response = authorized_request("POST", f"/api/articles/{article_id}/save")
-            if response.ok:
-                print("Article saved.")
-            else:
-                print("Error saving article:", response.json().get("message", response.text))
-        else:
-            print("Invalid choice. Try again.")
+    interactive_paginated_menu(articles, context_label="Today's Articles")

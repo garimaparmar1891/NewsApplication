@@ -13,23 +13,11 @@ admin_controller = AdminController()
 def get_external_servers():
     return admin_controller.get_external_servers()
 
-@admin_bp.route("/api/admin/external-servers", methods=["POST"])
-@admin_required
-@swag_from("../docs/admin/add_external_server.yml")
-def add_external_server():
-    return admin_controller.add_external_server()
-
 @admin_bp.route("/api/admin/external-servers/<int:server_id>", methods=["PATCH"])
 @admin_required
 @swag_from("../docs/admin/update_external_server.yml")
 def update_external_server(server_id):
     return admin_controller.update_external_server(server_id)
-
-@admin_bp.route("/api/admin/external-servers/<int:server_id>", methods=["DELETE"])
-@admin_required
-@swag_from("../docs/admin/delete_external_server.yml")
-def delete_external_server(server_id):
-    return admin_controller.delete_external_server(server_id)
 
 # ---------- Categories ----------
 @admin_bp.route("/api/admin/categories", methods=["GET"])
@@ -44,8 +32,8 @@ def get_categories():
 def add_category():
     return admin_controller.add_category()
 
-@admin_bp.route("/api/admin/categories/<int:category_id>", methods=["DELETE"])
+@admin_bp.route("/api/admin/categories/<int:category_id>/hide", methods=["PATCH"])
 @admin_required
-@swag_from("../docs/admin/delete_category.yml")
-def delete_category(category_id):
-    return admin_controller.delete_category(category_id)
+@swag_from("../docs/admin/hide_category.yml")
+def hide_category(category_id):
+    return admin_controller.hide_category(category_id)

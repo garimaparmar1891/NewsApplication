@@ -1,20 +1,22 @@
 from utils.db import get_db_connection
 from queries import user_keywords as q
 
-class UserKeywordRepository:
 
+class UserKeywordRepository:
     def add_user_keyword(self, user_id, category_id, keyword):
-        with get_db_connection() as conn:
-            cursor = conn.cursor()
-            try:
+        try:
+            with get_db_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(q.CHECK_USER_KEYWORD_EXISTS, (user_id, category_id, keyword))
+                if cursor.fetchone():
+                    return False
                 cursor.execute(q.INSERT_USER_KEYWORD, (user_id, category_id, keyword))
                 conn.commit()
                 return True
-            except Exception as e:
-                print("Failed to insert user keyword:", e)
-                conn.rollback()
-                return False
-
+        except Exception as e:
+            print(f"[Add Keyword Error]: {e}")
+            return False
+    
     def get_user_keywords(self, user_id):
         with get_db_connection() as conn:
             cursor = conn.cursor()

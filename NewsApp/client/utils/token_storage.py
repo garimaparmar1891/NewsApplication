@@ -6,12 +6,12 @@ USER_FILE = "user_info.json"
 
 def save_token(token):
     with open(TOKEN_FILE, "w") as f:
-        f.write(token)
+        f.write(token or "")
 
 def get_token():
     if os.path.exists(TOKEN_FILE):
         with open(TOKEN_FILE, "r") as f:
-            return f.read().strip()
+            return f.read().strip() or None
     return None
 
 def save_user_info(user_info):
@@ -25,5 +25,5 @@ def get_user_info():
     return {}
 
 def clear_token():
-    global _token
-    _token = None
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)

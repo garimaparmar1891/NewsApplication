@@ -7,7 +7,7 @@ from scheduler.news_fetcher import start_scheduled_jobs
 from utils.swagger_config import swagger_template
 from routes import (
     auth_bp, article_bp, user_bp, notification_bp,
-    keyword_bp, admin_bp, reaction_bp, user_keyword_bp
+    keyword_bp, admin_bp, reaction_bp, user_keyword_bp, article_visibility_bp
 )
 from dotenv import load_dotenv
 import os
@@ -40,6 +40,7 @@ def register_blueprints(app):
     app.register_blueprint(admin_bp)
     app.register_blueprint(reaction_bp)
     app.register_blueprint(user_keyword_bp)
+    app.register_blueprint(article_visibility_bp)
 
 if __name__ == "__main__":
     app = create_app()

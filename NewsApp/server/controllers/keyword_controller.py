@@ -2,6 +2,7 @@ from flask import request
 from http import HTTPStatus
 from services.keyword_service import KeywordService
 from utils.response_utils import success_response, error_response
+from constants import messages
 
 
 class KeywordController:
@@ -10,31 +11,32 @@ class KeywordController:
 
     def get_all_keywords(self):
         keywords = self.keyword_service.get_all_keywords()
-        if keywords:
-            return self._success(data=keywords)
-        return self._error("No keywords found", HTTPStatus.NOT_FOUND)
+        if not keywords:
+            return self._error(messages.KEYWORD_NOT_FOUND, HTTPStatus.NOT_FOUND)
+        return self._success(data=keywords)
 
     def add_keyword(self):
         data = request.get_json()
         if not self._has_required_fields(data, ["word", "category_id"]):
-            return self._error("Word and category_id are required")
+            return self._error(messages.MISSING_REQUIRED_FIELDS)
 
-        if self.keyword_service.add_keyword(data["word"], data["category_id"]):
-            return self._success(message="Keyword added", status=HTTPStatus.CREATED)
-
-        return self._error("Failed to add keyword")
+        success = self.keyword_service.add_keyword(data["word"], data["category_id"])
+        if success:
+            return self._success(message=messages.KEYWORD_ADDED, status=HTTPStatus.CREATED)
+        return self._error(messages.KEYWORD_ADD_FAILED)
 
     def delete_keyword(self, keyword_id):
-        if self.keyword_service.delete_keyword(keyword_id):
-            return self._success(message="Keyword deleted")
-        return self._error("Keyword not found", HTTPStatus.NOT_FOUND)
+        success = self.keyword_service.delete_keyword(keyword_id)
+        if success:
+            return self._success(message=messages.KEYWORD_DELETED)
+        return self._error(messages.KEYWORD_NOT_FOUND, HTTPStatus.NOT_FOUND)
+
 
     def _has_required_fields(self, data, fields):
         return data and all(data.get(field) for field in fields)
 
     def _success(self, data=None, message=None, status=HTTPStatus.OK):
-        payload = {"data": data} if data else {}
-        return success_response(payload, message, status)
+        return success_response({"data": data} if data else {}, message, status)
 
     def _error(self, message, status=HTTPStatus.BAD_REQUEST):
         return error_response(message, status)

@@ -34,9 +34,8 @@ def get_articles_by_range():
 def get_all_categories():
     return article_controller.get_all_categories()
 
-# ---------- Save Article ----------
-@article_bp.route("/api/articles/<int:article_id>/save", methods=["POST"])
+# ---------- Record Read Article ----------
+@article_bp.route("/api/history/<int:article_id>", methods=["POST"])
 @user_required
-@swag_from("../docs/articles/save_article.yml")
-def save_article(article_id):
-    return article_controller.save_article(article_id)
+def record_article_read(article_id):
+    return article_controller.record_article_read(article_id)

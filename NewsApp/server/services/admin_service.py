@@ -1,27 +1,28 @@
 from repositories.admin_repository import AdminRepository
+from constants import messages
 
 
 class AdminService:
     def __init__(self):
-        self.repo = AdminRepository()
+        self.repository = AdminRepository()
 
     def get_external_servers(self):
-        return self.repo.get_external_servers()
+        return self.repository.get_external_servers()
 
-    def add_external_server(self, name, base_url, api_key):
-        return self.repo.add_external_server(name, base_url, api_key)
+    def update_external_server(self, server_id, update_data):
+        return self.repository.update_external_server(server_id, update_data)
 
-    def update_external_server(self, server_id, data):
-        return self.repo.update_external_server(server_id, data)
-
-    def delete_external_server(self, server_id):
-        return self.repo.delete_external_server(server_id)
 
     def get_categories(self):
-        return self.repo.get_categories()
+        return self.repository.get_categories()
 
     def add_category(self, name):
-        return self.repo.add_category(name)
+        return self.repository.add_category(name)
 
-    def delete_category(self, category_id):
-        return self.repo.delete_category(category_id)
+    def hide_category(self, category_id):
+        category = self.repository.get_category_by_id(category_id)
+        if not category:
+            raise ValueError(messages.CATEGORY_NOT_FOUND)
+        
+        self.repository.hide_category_by_id(category_id)
+        return messages.CATEGORY_HIDDEN

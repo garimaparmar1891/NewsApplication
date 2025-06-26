@@ -1,17 +1,20 @@
-
 from utils.http_client import authorized_request
+from utils.endpoints import (
+    ADD_NOTIFICATION_KEYWORD,
+    GET_NOTIFICATION_KEYWORDS,
+    DELETE_NOTIFICATION_KEYWORD
+)
 
 def add_notification_keyword():
     print("\n--- Add Notification Keyword ---")
-    keyword = input("Enter keyword to be notified about: ").strip()
-    category = input("Enter category (optional, press Enter to skip): ").strip()
+    data = prompt_keyword_data()
+    response = send_add_notification_keyword_request(data)
+    print_add_notification_keyword_status(response)
 
-    data = {"keyword": keyword}
-    if category:
-        data["category"] = category
+def send_add_notification_keyword_request(data):
+    return authorized_request("POST", ADD_NOTIFICATION_KEYWORD, json=data)
 
-    response = authorized_request("POST", "/api/notifications/keywords", json=data)
-
+def print_add_notification_keyword_status(response):
     if response.ok:
         print("Keyword added for notifications.")
     else:
@@ -20,8 +23,13 @@ def add_notification_keyword():
 
 def view_notification_keywords():
     print("\n--- Notification Keywords ---")
-    response = authorized_request("GET", "/api/notifications/keywords")
-    print(response)
+    response = send_view_notification_keywords_request()
+    print_view_notification_keywords_status(response)
+
+def send_view_notification_keywords_request():
+    return authorized_request("GET", GET_NOTIFICATION_KEYWORDS)
+
+def print_view_notification_keywords_status(response):
     if response.ok:
         keywords = response.json().get("data", [])
         if not keywords:
@@ -36,9 +44,22 @@ def view_notification_keywords():
 def delete_notification_keyword():
     print("\n--- Delete Notification Keyword ---")
     keyword_id = input("Enter the ID of the keyword to delete: ").strip()
-    response = authorized_request("DELETE", f"/api/notifications/keywords/{keyword_id}")
+    response = send_delete_notification_keyword_request(keyword_id)
+    print_delete_notification_keyword_status(response)
 
+def send_delete_notification_keyword_request(keyword_id):
+    return authorized_request("DELETE", DELETE_NOTIFICATION_KEYWORD.format(keyword_id=keyword_id))
+
+def print_delete_notification_keyword_status(response):
     if response.ok:
         print("Notification keyword deleted.")
     else:
         print("Failed to delete keyword:", response.json().get("message", response.text))
+
+def prompt_keyword_data():
+    keyword = input("Enter keyword to be notified about: ").strip()
+    category = input("Enter category (optional, press Enter to skip): ").strip()
+    data = {"keyword": keyword}
+    if category:
+        data["category"] = category
+    return data

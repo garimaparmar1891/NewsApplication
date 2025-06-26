@@ -6,3 +6,4 @@ from .keyword_routes import keyword_bp
 from .admin_routes import admin_bp
 from .article_reaction_routes import reaction_bp
 from .user_keyword_routes import user_keyword_bp
+from .article_visibility_route import article_visibility_bp

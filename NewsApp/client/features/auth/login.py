@@ -1,22 +1,27 @@
 from utils.http_client import authorized_request
 from utils.token_storage import save_token, save_user_info
+from utils.endpoints import LOGIN
 
 def login():
+    email, password = prompt_login_credentials()
+    response = perform_login_request(email, password)
+    return handle_login_response(response)
+
+def prompt_login_credentials():
     email = input("Email: ")
     password = input("Password: ")
+    return email, password
 
-    response = authorized_request(
+def perform_login_request(email, password):
+    return authorized_request(
         method="POST",
-        endpoint="/api/login",
-        json={
-            "email": email,
-            "password": password
-        }
+        endpoint=LOGIN,
+        json={"email": email, "password": password}
     )
 
+def handle_login_response(response):
     try:
         data = response.json()
-
     except ValueError:
         print("Login failed: Invalid response format.")
         return None
@@ -27,10 +32,8 @@ def login():
             "username": data["data"].get("username", "User"),
             "role": data["data"].get("role", "User")
         }
-
         save_token(access_token)
         save_user_info(user_info)
-
         print(f"Login successful. Welcome, {user_info['username']}!")
         return user_info["role"].lower()
     else:

@@ -1,6 +1,6 @@
 
 tags:
-  - Keywords
+  - User-Keyword
 summary: Delete a keyword by ID for the logged-in user
 security:
   - Bearer: []

@@ -1,4 +1,6 @@
 from repositories.keyword_repository import KeywordRepository
+from constants import messages
+from http import HTTPStatus
 
 
 class KeywordService:
@@ -10,7 +12,10 @@ class KeywordService:
 
     def add_keyword(self, word, category_id):
         if not self._is_valid_input(word, category_id):
-            return {"error": "Keyword and category_id are required", "status": 400}
+            return {
+                "error": messages.MISSING_KEYWORD_FIELDS,
+                "status": HTTPStatus.BAD_REQUEST
+            }
 
         cleaned_word = self._clean_word(word)
         return self.repo.add_keyword(cleaned_word, category_id)
@@ -18,11 +23,9 @@ class KeywordService:
     def delete_keyword(self, keyword_id):
         return self.repo.delete_keyword(keyword_id)
 
-    # ---------- Private Helpers ----------
 
     def _is_valid_input(self, word, category_id):
         return bool(word and category_id)
 
     def _clean_word(self, word):
         return word.strip().lower()
-

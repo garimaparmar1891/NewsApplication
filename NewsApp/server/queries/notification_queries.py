@@ -1,5 +1,3 @@
-from textwrap import dedent
-
 GET_LAST_LOGIN = """
 SELECT TOP 1 LoginTime
 FROM LoginHistory
@@ -34,9 +32,10 @@ WHEN NOT MATCHED THEN
 """
 
 GET_ENABLED_CATEGORIES = """
-SELECT CategoryId
-FROM NotificationPreferences
-WHERE UserId = ? AND IsEnabled = 1
+SELECT np.CategoryId
+FROM NotificationPreferences np
+JOIN Categories c ON np.CategoryId = c.Id
+WHERE np.UserId = ? AND np.IsEnabled = 1 AND c.IsHidden = 0
 """
 
 GET_USER_KEYWORDS = """
@@ -56,14 +55,20 @@ INSERT INTO UserKeywords (UserId, CategoryId, Keyword)
 VALUES (?, ?, ?)
 """
 
-def GET_UNSENT_ARTICLES(limit):
-    return f"""
-    SELECT TOP {limit} A.Id, A.Title, A.Content, A.PublishedAt
-    FROM Articles A
-    LEFT JOIN SentNotifications SN ON A.Id = SN.ArticleId AND SN.UserId = ?
-    WHERE A.CategoryId = ? AND SN.Id IS NULL
-    ORDER BY A.PublishedAt DESC
-    """
+GET_UNSENT_ARTICLES = """
+SELECT A.Id, A.Title, A.Content, A.CategoryId, A.PublishedAt, A.Source, A.Url
+FROM Articles A
+LEFT JOIN SentNotifications SN ON A.Id = SN.ArticleId AND SN.UserId = ?
+JOIN Categories C ON A.CategoryId = C.Id
+WHERE A.CategoryId = ?
+  AND SN.Id IS NULL
+  AND C.IsHidden = 0
+  AND (
+        LOWER(A.Title) LIKE ?
+        OR LOWER(A.Content) LIKE ?
+      )
+ORDER BY A.PublishedAt DESC
+"""
 
 MARK_ARTICLE_AS_SENT = """
 INSERT INTO SentNotifications (UserId, ArticleId)
@@ -84,14 +89,15 @@ GET_USER_PREFERENCES = """
 SELECT np.CategoryId, c.Name AS CategoryName, np.IsEnabled
 FROM NotificationPreferences np
 JOIN Categories c ON np.CategoryId = c.Id
-WHERE np.UserId = ?
+WHERE np.UserId = ? AND c.IsHidden = 0
 """
 
 GET_UNREAD_NOTIFICATIONS = """
 SELECT N.Id, N.ArticleId, N.Message, N.CreatedAt, A.Title, A.Source
 FROM Notifications N
 JOIN Articles A ON N.ArticleId = A.Id
-WHERE N.UserId = ? AND N.IsRead = 0
+JOIN Categories C ON A.CategoryId = C.Id
+WHERE N.UserId = ? AND N.IsRead = 0 AND C.IsHidden = 0
 ORDER BY N.CreatedAt DESC
 """
 
@@ -104,4 +110,13 @@ WHERE UserId = ? AND IsRead = 0
 INSERT_NOTIFICATION = """
 INSERT INTO Notifications (UserId, ArticleId, Message, IsRead, CreatedAt)
 VALUES (?, ?, ?, 0, GETDATE())
+"""
+
+GET_ARTICLES_BY_CATEGORIES = """
+SELECT A.Id, A.Title, A.Content, A.CategoryId, A.PublishedAt, A.Source, A.Url
+FROM Articles A
+JOIN Categories C ON A.CategoryId = C.Id
+LEFT JOIN SentNotifications SN ON A.Id = SN.ArticleId AND SN.UserId = ?
+WHERE A.CategoryId IN ({placeholders}) AND SN.Id IS NULL AND C.IsHidden = 0
+ORDER BY A.PublishedAt DESC
 """

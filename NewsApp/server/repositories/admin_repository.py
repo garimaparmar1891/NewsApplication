@@ -1,99 +1,92 @@
+from datetime import datetime
 from utils.db import get_db_connection
 from queries import admin_queries
-from datetime import datetime
 
 
 class AdminRepository:
     def get_external_servers(self):
-        with get_db_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(admin_queries.GET_EXTERNAL_SERVERS)
-            return [
-                {
-                    "id": row.Id,
-                    "name": row.Name,
-                    "api_key": row.ApiKey,
-                    "base_url": row.BaseUrl,
-                    "is_active": row.IsActive,
-                    "last_accessed": row.LastAccessed
-                }
-                for row in cursor.fetchall()
-            ]
-
-    def add_external_server(self, name, base_url, api_key):
-        return self._execute_write_query(
-            admin_queries.INSERT_EXTERNAL_SERVER,
-            (name, api_key, base_url),
-            "[DB ERROR] add_external_server"
+        return self._fetch_all(
+            query=admin_queries.GET_EXTERNAL_SERVERS,
+            row_mapper=self._map_external_server_row
         )
 
-    def delete_external_server(self, server_id):
-        return self._execute_delete_query(
-            admin_queries.DELETE_EXTERNAL_SERVER,
-            (server_id,),
-            "[DB ERROR] delete_external_server"
-        )
+    def update_external_server(self, server_id, data):
+        update_fields, params = self._prepare_update_fields(data)
+
+        if not update_fields:
+            return False
+
+        update_fields.append("LastAccessed = ?")
+        params.append(datetime.now())
+        params.append(server_id)
+
+        query = admin_queries.UPDATE_EXTERNAL_SERVER.format(fields=", ".join(update_fields))
+        return self._execute_write(query, params, "[DB ERROR] update_external_server")
+
 
     def get_categories(self):
+        return self._fetch_all(
+            query=admin_queries.GET_CATEGORIES,
+            row_mapper=self._map_category_row
+        )
+
+    def get_category_by_id(self, category_id):
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(admin_queries.GET_CATEGORIES)
-            return [{"id": row.Id, "name": row.Name} for row in cursor.fetchall()]
+            cursor.execute(admin_queries.GET_CATEGORY_BY_ID, (category_id,))
+            return cursor.fetchone()
 
     def add_category(self, name):
-        return self._execute_write_query(
+        return self._execute_write(
             admin_queries.INSERT_CATEGORY,
             (name,),
             "[DB ERROR] add_category"
         )
 
-    def delete_category(self, category_id):
-        return self._execute_delete_query(
-            admin_queries.DELETE_CATEGORY,
+    def hide_category_by_id(self, category_id):
+        return self._execute_write(
+            admin_queries.HIDE_CATEGORY_BY_ID,
             (category_id,),
-            "[DB ERROR] delete_category"
+            "[DB ERROR] hide_category_by_id"
         )
 
-    def update_external_server(self, server_id, data):
+
+    def _prepare_update_fields(self, data):
         update_fields = []
         params = []
 
-        if "Name" in data:
-            update_fields.append("Name = ?")
-            params.append(data["Name"])
+        field_mapping = {
+            "Name": "Name",
+            "Api_key": "ApiKey",
+            "Base_Url": "BaseUrl",
+            "Is_Active": "IsActive"
+        }
 
-        if "Api_key" in data:
-            update_fields.append("ApiKey = ?")
-            params.append(data["Api_key"])
+        for key, db_field in field_mapping.items():
+            if key in data:
+                update_fields.append(f"{db_field} = ?")
+                value = int(data[key]) if key == "Is_Active" else data[key]
+                params.append(value)
 
-        if "Base_Url" in data:
-            update_fields.append("BaseUrl = ?")
-            params.append(data["Base_Url"])
+        return update_fields, params
 
-        if "Is_Active" in data:
-            update_fields.append("IsActive = ?")
-            params.append(int(data["Is_Active"]))
+    def _map_external_server_row(self, row):
+        return {
+            "id": row.Id,
+            "name": row.Name,
+            "api_key": row.ApiKey,
+            "base_url": row.BaseUrl,
+            "is_active": row.IsActive,
+            "last_accessed": row.LastAccessed
+        }
 
-        update_fields.append("LastAccessed = ?")
-        params.append(datetime.now())
+    def _map_category_row(self, row):
+        return {
+            "id": row.Id,
+            "name": row.Name
+        }
 
-        if not update_fields:
-            return False
-
-        params.append(server_id)
-        sql = admin_queries.UPDATE_EXTERNAL_SERVER_BASE.format(fields=", ".join(update_fields))
-
-        try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(sql, params)
-                conn.commit()
-                return True
-        except Exception as e:
-            print(f"[DB ERROR] update_external_server: {e}")
-            return False
-
-    def _execute_write_query(self, query, params, error_msg):
+    def _execute_write(self, query, params, error_msg):
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
@@ -104,13 +97,13 @@ class AdminRepository:
             print(f"{error_msg}: {e}")
             return False
 
-    def _execute_delete_query(self, query, params, error_msg):
+    def _fetch_all(self, query, row_mapper):
         try:
             with get_db_connection() as conn:
                 cursor = conn.cursor()
-                cursor.execute(query, params)
-                conn.commit()
-                return cursor.rowcount > 0
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                return [row_mapper(row) for row in rows]
         except Exception as e:
-            print(f"{error_msg}: {e}")
-            return False
+            print(f"[DB ERROR] fetch_all: {e}")
+            return []

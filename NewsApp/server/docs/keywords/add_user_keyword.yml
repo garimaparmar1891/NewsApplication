@@ -1,0 +1,57 @@
+tags:
+  - User-Keyword
+summary: Add a keyword for the logged-in user
+description: API endpoint to add a keyword under a specific category for the authenticated user.
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - category_id
+        - word
+      properties:
+        category_id:
+          type: integer
+          example: 2
+        word:
+          type: string
+          example: "climate"
+responses:
+  201:
+    description: Keyword added successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Keyword added successfully
+        data:
+          type: object
+          nullable: true
+  400:
+    description: Missing or invalid input
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Keyword and category_id are required
+  401:
+    description: Unauthorized - JWT missing or invalid
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Unauthorized
