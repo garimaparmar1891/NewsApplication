@@ -1,67 +1,24 @@
-from flask import request
-from flask_jwt_extended import create_access_token
-from datetime import timedelta
 from services.auth_service import AuthService
-from utils.response_utils import success_response, error_response
-from http import HTTPStatus
+from utils.exception_handler import handle_exceptions
 from constants import messages
+from flask import request
+from controllers.base_controller import BaseController
 
-
-class AuthController:
+class AuthController(BaseController):
     def __init__(self):
+        super().__init__()
         self.auth_service = AuthService()
 
+    @handle_exceptions()
     def signup(self):
-        data = request.get_json()
-        if not self._has_required_fields(data, messages.REQUIRED_SIGNUP_FIELDS):
-            return self._missing_fields_response()
-        return self._process_signup(data)
+        data, error = self._validate_json_data(required_fields=messages.REQUIRED_SIGNUP_FIELDS)
+        if error:
+            return error
+        return self.auth_service.signup(data)
 
+    @handle_exceptions()
     def login(self):
-        data = request.get_json()
-        if not self._has_required_fields(data, messages.REQUIRED_LOGIN_FIELDS):
-            return self._missing_fields_response()
-        return self._process_login(data)
-
-
-    def _process_signup(self, data):
-        result = self.auth_service.signup(
-            username=data["username"],
-            email=data["email"],
-            password=data["password"]
-        )
-
-        if result.get("error"):
-            return error_response(
-                result["error"],
-                result.get("status", HTTPStatus.BAD_REQUEST)
-            )
-
-        return success_response(message="Signup successful", status=HTTPStatus.CREATED)
-
-    def _process_login(self, data):
-        user = self.auth_service.login(data["email"], data["password"])
-        if not user:
-            return error_response("Invalid credentials", HTTPStatus.UNAUTHORIZED)
-
-        token = self._generate_token(user)
-        self.auth_service.record_login(user["Id"])
-
-        return success_response({
-            "access_token": token,
-            "username": user["Username"],
-            "role": user["Role"]
-        })
-
-    def _generate_token(self, user):
-        return create_access_token(
-            identity=str(user["Id"]),
-            additional_claims={"role": user["Role"]},
-            expires_delta=timedelta(days=1)
-        )
-
-    def _has_required_fields(self, data, fields):
-        return data and all(data.get(field) for field in fields)
-
-    def _missing_fields_response(self):
-        return error_response("Missing required fields", HTTPStatus.BAD_REQUEST)
+        data, error = self._validate_json_data(required_fields=messages.REQUIRED_LOGIN_FIELDS)
+        if error:
+            return error
+        return self.auth_service.login(data)

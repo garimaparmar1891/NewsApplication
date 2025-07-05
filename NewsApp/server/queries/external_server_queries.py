@@ -1,4 +1,4 @@
 GET_ALL_KEYS = """
-SELECT Name, ApiKey, IsActive, LastAccessed, BaseUrl
-FROM ExternalServers
+    SELECT Id, Name, ApiKey, IsActive, LastAccessed, BaseUrl
+    FROM ExternalServers
 """

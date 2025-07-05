@@ -6,7 +6,6 @@ from flasgger import swag_from
 user_keyword_bp = Blueprint("user_keywords", __name__)
 controller = UserKeywordController()
 
-#---------- user keyword action --------
 @user_keyword_bp.route("/api/user-keywords", methods=["POST"])
 @user_required
 @swag_from("../docs/keywords/add_user_keyword.yml")

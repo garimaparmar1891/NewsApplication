@@ -1,0 +1,30 @@
+tags:
+  - Articles
+summary: Record that a user has read an article
+description: Records the user's interaction with an article for analytics and recommendation purposes.
+security:
+  - Bearer: []
+parameters:
+  - name: article_id
+    in: path
+    required: true
+    type: integer
+    description: ID of the article being read
+responses:
+  200:
+    description: Article read recorded successfully
+    schema:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Article read recorded successfully
+  400:
+    description: Invalid article ID or article not found
+  401:
+    description: Unauthorized - JWT token missing or invalid
+  500:
+    description: Internal server error 

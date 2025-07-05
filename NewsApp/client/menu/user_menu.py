@@ -1,29 +1,33 @@
-from utils.header import print_welcome_message
-from features.articles.headlines_menu import show_headlines_menu
-from features.saved_articles.view_saved_articles import view_saved_articles_paginated
-from features.articles.search import search_articles
-from features.notifications.menu import notification_menu
-from utils.token_storage import save_token
+from utils.header import HeaderUtils
+from menu.headlines_menu import HeadlinesMenu
+from features.saved_articles.view_saved_articles.view_saved_articles_manager import SavedArticlesManager
+from features.articles.search.search_manager import SearchManager
+from menu.notification_menu import NotificationMenu
+from utils.token_storage import TokenStorage
 from menu.menu_constants import USER_MENU_OPTIONS
-def show_user_menu():
-    while True:
-        print_welcome_message()
-        print("\n=== User Menu ===")
-        for option in USER_MENU_OPTIONS:
-            print(option)
-        choice = input("Select an option: ")
 
-        if choice == "1":
-            show_headlines_menu()
-        elif choice == "2":
-            view_saved_articles_paginated()
-        elif choice == "3":
-            search_articles()
-        elif choice == "4":
-            notification_menu()
-        elif choice == "5":
-            save_token(None)
-            print("Logged out successfully.")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+class UserMenu:
+    """User menu for user-specific actions."""
+
+    def show(self):
+        while True:
+            HeaderUtils.print_welcome_message()
+            print("\n=== User Menu ===")
+            for option in USER_MENU_OPTIONS:
+                print(option)
+            choice = input("Select an option: ")
+
+            if choice == "1":
+                HeadlinesMenu().show()
+            elif choice == "2":
+                SavedArticlesManager.view_saved_articles_paginated()
+            elif choice == "3":
+                SearchManager.search_articles()
+            elif choice == "4":
+                NotificationMenu().show()
+            elif choice == "5":
+                TokenStorage.save_token(None)
+                print("Logged out successfully.")
+                break
+            else:
+                print("Invalid choice. Please try again.")

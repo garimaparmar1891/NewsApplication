@@ -1,27 +1,34 @@
 from datetime import datetime
 
-def validate_date_range_input():
-    start = prompt_date("Start Date")
-    end = prompt_date("End Date")
+class DateValidator:
+    """Helper class for validating and prompting date input."""
 
-    if not validate_date_format(start):
-        print_invalid_date("Start Date")
-        return None, None
-    if not validate_date_format(end):
-        print_invalid_date("End Date")
-        return None, None
+    @staticmethod
+    def validate_date_range_input():
+        start = DateValidator.prompt_date("Start Date")
+        end = DateValidator.prompt_date("End Date")
 
-    return start, end
+        if not DateValidator.validate_date_format(start):
+            DateValidator.print_invalid_date("Start Date")
+            return None, None
+        if not DateValidator.validate_date_format(end):
+            DateValidator.print_invalid_date("End Date")
+            return None, None
 
-def prompt_date(label):
-    return input(f"{label} (YYYY-MM-DD): ").strip()
+        return start, end
 
-def validate_date_format(date_str):
-    try:
-        datetime.strptime(date_str, "%Y-%m-%d")
-        return True
-    except ValueError:
-        return False
+    @staticmethod
+    def prompt_date(label):
+        return input(f"{label} (YYYY-MM-DD): ").strip()
 
-def print_invalid_date(label):
-    print(f"Invalid {label.lower()} format.")
+    @staticmethod
+    def validate_date_format(date_str):
+        try:
+            datetime.strptime(date_str, "%Y-%m-%d")
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def print_invalid_date(label):
+        print(f"Invalid {label.lower()} format.")

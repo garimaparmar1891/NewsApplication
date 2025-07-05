@@ -1,18 +1,18 @@
-
 tags:
   - Admin
-summary: Delete a keyword by ID for the logged-in user
-security:
-  - Bearer: []
+summary: Delete keyword by word
+description: Deletes a keyword by its word instead of ID
 parameters:
-  - name: keyword_id
+  - name: word
     in: path
     required: true
-    type: integer
+    schema:
+      type: string
+    description: The keyword to delete
 responses:
-  200:
+  '200':
     description: Keyword deleted successfully
-  404:
+  '404':
     description: Keyword not found
-  401:
-    description: Unauthorized - JWT missing or invalid
+  '401':
+    description: Unauthorized

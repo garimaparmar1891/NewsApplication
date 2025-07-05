@@ -1,0 +1,23 @@
+tags:
+  - Article Visibility
+summary: Hide or unhide an article
+description: Allows an admin to hide or unhide an article.
+parameters:
+  - name: article_id
+    in: path
+    required: true
+    schema:
+      type: integer
+  - name: action
+    in: path
+    required: true
+    schema:
+      type: string
+      enum: [hide, unhide]
+responses:
+  '200':
+    description: Article visibility updated
+  '400':
+    description: Bad request
+  '401':
+    description: Unauthorized

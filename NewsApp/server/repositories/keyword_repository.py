@@ -1,54 +1,34 @@
-
-from utils.db import get_db_connection
-from queries import keyword_queries as q
+from utils.db import fetch_all_query, execute_write_query
+from queries import admin_queries as q
+from constants import messages
 
 
 class KeywordRepository:
 
     def get_all_keywords(self):
-        return self._fetch_all(
+        return fetch_all_query(
             query=q.GET_ALL_KEYWORDS,
-            row_mapper=lambda row: {
-                "id": row.Id,
-                "word": row.Word,
-                "category_id": row.CategoryId
-            }
+            row_mapper=self._map_keyword_row,
+            error_msg=messages.DB_ERROR_GET_KEYWORDS
         )
 
     def add_keyword(self, word, category_id):
-        return self._execute_write(
+        return execute_write_query(
             query=q.INSERT_KEYWORD,
             params=(word, category_id),
-            error_msg="[DB ERROR] add_keyword"
+            error_msg=messages.DB_ERROR_ADD_KEYWORD
         )
 
-    def delete_keyword(self, keyword_id):
-        return self._execute_write(
+    def delete_keyword(self, word):
+        return execute_write_query(
             query=q.DELETE_KEYWORD,
-            params=(keyword_id,),
-            error_msg="[DB ERROR] delete_keyword",
-            check_rowcount=True
+            params=(word,),
+            error_msg=messages.DB_ERROR_DELETE_KEYWORD
         )
 
-
-    def _fetch_all(self, query, params=None, row_mapper=None):
-        try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(query, params or [])
-                rows = cursor.fetchall()
-                return [row_mapper(row) for row in rows] if row_mapper else rows
-        except Exception as e:
-            print(f"[DB ERROR] fetch_all: {e}")
-            return []
-
-    def _execute_write(self, query, params=None, error_msg="[DB ERROR]", check_rowcount=False):
-        try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(query, params or [])
-                conn.commit()
-                return cursor.rowcount > 0 if check_rowcount else True
-        except Exception as e:
-            print(f"{error_msg}: {e}")
-            return False
+    def _map_keyword_row(self, row):
+        return {
+            "id": row.Id,
+            "word": row.Word,
+            "category_id": row.CategoryId
+        }

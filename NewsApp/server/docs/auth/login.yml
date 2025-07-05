@@ -11,10 +11,10 @@ parameters:
       properties:
         email:
           type: string
-          example: garima@gmail.com
+          example: rohittailor125@gmail.com
         password:
           type: string
-          example: garima
+          example: rohit
 responses:
   200:
     description: Login successful

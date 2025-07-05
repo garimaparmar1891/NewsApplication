@@ -1,76 +1,86 @@
 from datetime import datetime
-from utils.db import get_db_connection
-from queries import admin_queries
-
+from utils.db import execute_write_query, fetch_all_query
+from queries import admin_queries, category_queries
+from constants import messages
 
 class AdminRepository:
     def get_external_servers(self):
-        return self._fetch_all(
+        return fetch_all_query(
             query=admin_queries.GET_EXTERNAL_SERVERS,
-            row_mapper=self._map_external_server_row
+            row_mapper=self._map_external_server,
+            error_msg=messages.DB_ERROR_GET_EXTERNAL_SERVERS
         )
 
     def update_external_server(self, server_id, data):
-        update_fields, params = self._prepare_update_fields(data)
-
+        update_fields, params = self._build_update_params(data)
         if not update_fields:
             return False
-
+        
         update_fields.append("LastAccessed = ?")
-        params.append(datetime.now())
-        params.append(server_id)
-
+        params.extend([datetime.now(), server_id])
         query = admin_queries.UPDATE_EXTERNAL_SERVER.format(fields=", ".join(update_fields))
-        return self._execute_write(query, params, "[DB ERROR] update_external_server")
-
+        return execute_write_query(query, params, messages.DB_ERROR_UPDATE_EXTERNAL_SERVER)
 
     def get_categories(self):
-        return self._fetch_all(
-            query=admin_queries.GET_CATEGORIES,
-            row_mapper=self._map_category_row
+        return fetch_all_query(
+            query=category_queries.GET_CATEGORIES,
+            row_mapper=self._map_category,
+            error_msg=messages.DB_ERROR_GET_CATEGORIES
         )
-
-    def get_category_by_id(self, category_id):
-        with get_db_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(admin_queries.GET_CATEGORY_BY_ID, (category_id,))
-            return cursor.fetchone()
 
     def add_category(self, name):
-        return self._execute_write(
+        return execute_write_query(
             admin_queries.INSERT_CATEGORY,
             (name,),
-            "[DB ERROR] add_category"
+            messages.DB_ERROR_ADD_CATEGORY,
+            integrity_error_msg="UNIQUE KEY constraint",
+            integrity_exception=None
         )
 
-    def hide_category_by_id(self, category_id):
-        return self._execute_write(
-            admin_queries.HIDE_CATEGORY_BY_ID,
-            (category_id,),
-            "[DB ERROR] hide_category_by_id"
+    def get_keywords(self):
+        return fetch_all_query(
+            query=admin_queries.GET_ALL_KEYWORDS,
+            row_mapper=self._map_keyword,
+            error_msg=messages.DB_ERROR_GET_KEYWORDS
+        )
+
+    def add_keyword(self, word, category_id):
+        return execute_write_query(
+            admin_queries.INSERT_KEYWORD,
+            (word, category_id),
+            messages.DB_ERROR_ADD_KEYWORD,
+            integrity_error_msg="UNIQUE KEY constraint",
+            integrity_exception=None
+        )
+
+    def delete_keyword(self, word):
+        return execute_write_query(
+            admin_queries.DELETE_KEYWORD,
+            (word,),
+            messages.DB_ERROR_DELETE_KEYWORD
         )
 
 
-    def _prepare_update_fields(self, data):
-        update_fields = []
-        params = []
-
+    def _build_update_params(self, data):
         field_mapping = {
             "Name": "Name",
-            "Api_key": "ApiKey",
+            "Api_key": "ApiKey", 
             "Base_Url": "BaseUrl",
             "Is_Active": "IsActive"
         }
-
+        
+        update_fields = []
+        params = []
+        
         for key, db_field in field_mapping.items():
             if key in data:
                 update_fields.append(f"{db_field} = ?")
                 value = int(data[key]) if key == "Is_Active" else data[key]
                 params.append(value)
-
+        
         return update_fields, params
 
-    def _map_external_server_row(self, row):
+    def _map_external_server(self, row):
         return {
             "id": row.Id,
             "name": row.Name,
@@ -80,30 +90,15 @@ class AdminRepository:
             "last_accessed": row.LastAccessed
         }
 
-    def _map_category_row(self, row):
+    def _map_category(self, row):
         return {
             "id": row.Id,
             "name": row.Name
         }
 
-    def _execute_write(self, query, params, error_msg):
-        try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(query, params)
-                conn.commit()
-                return True
-        except Exception as e:
-            print(f"{error_msg}: {e}")
-            return False
-
-    def _fetch_all(self, query, row_mapper):
-        try:
-            with get_db_connection() as conn:
-                cursor = conn.cursor()
-                cursor.execute(query)
-                rows = cursor.fetchall()
-                return [row_mapper(row) for row in rows]
-        except Exception as e:
-            print(f"[DB ERROR] fetch_all: {e}")
-            return []
+    def _map_keyword(self, row):
+        return {
+            "id": row.Id,
+            "word": row.Word,
+            "category_id": row.CategoryId
+        }

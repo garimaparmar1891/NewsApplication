@@ -4,7 +4,7 @@ BASE_URL = "http://localhost:5000"
 # ------------------- Category Endpoints -------------------
 ADD_CATEGORY = "/api/admin/categories"
 GET_CATEGORIES = "/api/categories"
-
+GET_CATEGORY_FOR_ADMIN = "/api/admin/categories"
 # ------------------- Article Endpoints -------------------
 TODAY_HEADLINES = "/api/articles/today"
 GET_ARTICLES_BY_RANGE = "/api/articles/range"
@@ -16,6 +16,7 @@ READ_HISTORY = "/api/history/{article_id}"
 LIKE_ARTICLE = "/api/reactions/{article_id}/like"
 DISLIKE_ARTICLE = "/api/reactions/{article_id}/dislike"
 GET_SAVED_ARTICLES = "/api/users/saved-articles"
+GET_ALL_ARTICLES = "/api/articles"
 
 # ------------------- Reaction Endpoints -------------------
 REACT_TO_ARTICLE = "/api/reactions/{article_id}/{reaction}"
@@ -47,10 +48,11 @@ GET_EXTERNAL_SERVERS = "/api/admin/external-servers"
 UPDATE_EXTERNAL_SERVER = "/api/admin/external-servers"
 
 # ------------------- Blocked Keyword Endpoints -------------------
-ADD_BLOCKED_KEYWORD = "/api/admin/blocked-keywords"
-GET_BLOCKED_KEYWORDS = "/api/admin/blocked-keywords"
+ADD_BLOCKED_KEYWORD = "/api/article-visibility/blocked-keywords"
+GET_BLOCKED_KEYWORDS = "/api/article-visibility/blocked-keywords"
 
 # ------------------- Report/Moderation Endpoints -------------------
-GET_REPORTS = "/api/admin/reports"
-HIDE_UNHIDE_ARTICLE = "/api/admin/articles/{article_id}/{action}"
-HIDE_UNHIDE_CATEGORY = "/api/admin/categories/{category_id}/{action}"
+GET_REPORTS = "/api/article-visibility/reports"
+HIDE_UNHIDE_ARTICLE = "/api/article-visibility/articles/{article_id}/{action}"
+HIDE_UNHIDE_CATEGORY = "/api/article-visibility/categories/{category_id}/{action}"
+

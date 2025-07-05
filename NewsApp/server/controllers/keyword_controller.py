@@ -1,42 +1,28 @@
-from flask import request
-from http import HTTPStatus
 from services.keyword_service import KeywordService
-from utils.response_utils import success_response, error_response
+from utils.exception_handler import handle_exceptions
 from constants import messages
+from http import HTTPStatus
+from utils.response_utils import error_response
+from controllers.base_controller import BaseController
 
-
-class KeywordController:
+class KeywordController(BaseController):
     def __init__(self):
+        super().__init__()
         self.keyword_service = KeywordService()
 
-    def get_all_keywords(self):
-        keywords = self.keyword_service.get_all_keywords()
-        if not keywords:
-            return self._error(messages.KEYWORD_NOT_FOUND, HTTPStatus.NOT_FOUND)
-        return self._success(data=keywords)
+    @handle_exceptions()
+    def get_keywords(self):
+        return self.keyword_service.get_all_keywords()
 
+    @handle_exceptions()
     def add_keyword(self):
-        data = request.get_json()
-        if not self._has_required_fields(data, ["word", "category_id"]):
-            return self._error(messages.MISSING_REQUIRED_FIELDS)
+        data, error = self._validate_json_data(required_fields=["word", "category_id"])
+        if error:
+            return error
+        if not data:
+            return error_response(messages.MISSING_KEYWORD_FIELDS, HTTPStatus.BAD_REQUEST)
+        return self.keyword_service.add_keyword(data.get("word"), data.get("category_id"))
 
-        success = self.keyword_service.add_keyword(data["word"], data["category_id"])
-        if success:
-            return self._success(message=messages.KEYWORD_ADDED, status=HTTPStatus.CREATED)
-        return self._error(messages.KEYWORD_ADD_FAILED)
-
-    def delete_keyword(self, keyword_id):
-        success = self.keyword_service.delete_keyword(keyword_id)
-        if success:
-            return self._success(message=messages.KEYWORD_DELETED)
-        return self._error(messages.KEYWORD_NOT_FOUND, HTTPStatus.NOT_FOUND)
-
-
-    def _has_required_fields(self, data, fields):
-        return data and all(data.get(field) for field in fields)
-
-    def _success(self, data=None, message=None, status=HTTPStatus.OK):
-        return success_response({"data": data} if data else {}, message, status)
-
-    def _error(self, message, status=HTTPStatus.BAD_REQUEST):
-        return error_response(message, status)
+    @handle_exceptions()
+    def delete_keyword(self, word):
+        return self.keyword_service.delete_keyword(word)

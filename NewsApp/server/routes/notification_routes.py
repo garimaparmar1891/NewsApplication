@@ -6,7 +6,6 @@ from utils.auth_decorators import user_required
 notification_bp = Blueprint("notifications", __name__)
 notification_controller = NotificationController()
 
-#------ notification actions ---------
 @notification_bp.route("/api/notifications", methods=["GET"])
 @user_required
 @swag_from("../docs/notifications/get_notifications.yml")
@@ -25,8 +24,3 @@ def update_preferences():
 def get_preferences():
     return notification_controller.get_user_preferences()
 
-@notification_bp.route("/api/notifications/send-email", methods=["POST"])
-@user_required
-@swag_from("../docs/notifications/send_email.yml")
-def send_email_notifications():
-    return notification_controller.send_email_notifications()

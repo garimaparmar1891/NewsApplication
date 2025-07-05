@@ -1,39 +1,35 @@
-import requests
+from constants.messages import (
+    NEWSAPI_REQUESTING_ARTICLES, 
+    NEWSAPI_ERROR_FETCHING
+)
+from utils.base_news_handler import BaseNewsHandler
 
-class NewsAPIHandler:
+class NewsAPIHandler(BaseNewsHandler):
     def __init__(self, country="us", page_size=100):
+        default_params = {
+            "pageSize": page_size,
+            "country": country
+        }
+        super().__init__(default_params)
         self.default_country = country
         self.page_size = page_size
 
     def fetch_articles(self, base_url, api_key, category):
-        url = self._build_url(base_url, api_key, category)
-        self._log_request(category, url)
+        print(NEWSAPI_REQUESTING_ARTICLES.format(category=category))
+        return super().fetch_articles(base_url, api_key, category=category)
 
-        try:
-            response = requests.get(url)
-            self._ensure_success(response)
-            return self._parse_response(response)
-        except requests.RequestException as error:
-            self._log_error(error)
-            return []
+    def _build_request_params(self, api_key, **kwargs):
+        category = kwargs.get('category', 'general')
+        params = {
+            "category": category,
+            "apiKey": api_key,
+            **self.default_params
+        }
+        return params
 
-    def _build_url(self, base_url, api_key, category):
-        return (
-            f"{base_url}?category={category}"
-            f"&apiKey={api_key}&pageSize={self.page_size}&country={self.default_country}"
-        )
+    def _extract_articles(self, response):
+        response_data = response.json()
+        return response_data.get("articles", [])
 
-    def _log_request(self, category, url):
-        print(f"Requesting NewsAPI articles for category: {category}")
-        print(f"URL: {url}")
-
-    def _ensure_success(self, response):
-        if response.status_code != 200:
-            raise Exception(f"NewsAPI Error {response.status_code}: {response.text}")
-
-    def _parse_response(self, response):
-        data = response.json()
-        return data.get("articles", [])
-
-    def _log_error(self, error):
-        print(f"Error fetching from NewsAPI: {error}")
+    def _log_error(self, message):
+        print(NEWSAPI_ERROR_FETCHING.format(error=message))

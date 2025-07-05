@@ -1,0 +1,18 @@
+tags:
+  - Article Visibility
+summary: View blocked keywords
+description: Returns a list of blocked keywords.
+responses:
+  '200':
+    description: Successful response
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: string
+            example: "spoiler"
+  '400':
+    description: Bad request
+  '401':
+    description: Unauthorized

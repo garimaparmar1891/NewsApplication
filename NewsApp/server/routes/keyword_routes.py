@@ -6,12 +6,11 @@ from utils.auth_decorators import admin_required
 keyword_bp = Blueprint("keywords", __name__)
 keyword_controller = KeywordController()
 
-#--------- keyword actions ----------
 @keyword_bp.route("/api/keywords", methods=["GET"])
 @admin_required
 @swag_from("../docs/admin/get_keywords.yml")
 def get_keywords():
-    return keyword_controller.get_all_keywords()
+    return keyword_controller.get_keywords()
 
 @keyword_bp.route("/api/keywords", methods=["POST"])
 @admin_required
@@ -19,8 +18,8 @@ def get_keywords():
 def add_keyword():
     return keyword_controller.add_keyword()
 
-@keyword_bp.route("/api/keywords/<int:keyword_id>", methods=["DELETE"])
+@keyword_bp.route("/api/keywords/<string:word>", methods=["DELETE"])
 @admin_required
 @swag_from("../docs/admin/delete_keyword.yml")
-def delete_keyword(keyword_id):
-    return keyword_controller.delete_keyword(keyword_id)
+def delete_keyword(word):
+    return keyword_controller.delete_keyword(word)

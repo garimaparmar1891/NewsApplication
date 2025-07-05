@@ -1,48 +1,40 @@
 from menu.menu_constants import ADMIN_MENU_OPTIONS
-from features.admin.external_servers import (
-    view_all_external_servers,
-    view_external_server_details,
-    update_external_server,
-)
-from features.admin.categories import add_news_category
-from features.admin.moderation import (
-    view_reported_articles,
-    hide_unhide_article,
-    hide_unhide_category,
-)
-from features.admin.blocked_keywords import (
-    add_blocked_keyword,
-    view_blocked_keywords,
-)
+from features.admin.external_server.external_servers_manager import ExternalServersManager
+from features.admin.categories.categories_manager import CategoryManager
+from features.admin.report_management.report_management_manager import ReportManagementManager
+from features.admin.blocked_keywords.blocked_keywords_manager import BlockedKeywordsManager
+from constants import messages as msg
+from menu.keywords_menu import KeywordsMenu
 
-def show_admin_menu():
-    while True:
-        print("\n=== Admin Menu ===")
-        for option in ADMIN_MENU_OPTIONS:
-            print(option)
+class AdminMenu:
+    """Admin menu for admin-specific actions."""
 
-        choice = input("Select an option: ").strip()
+    def __init__(self):
+        self.menu_actions = {
+            "1": ExternalServersManager.view_all_external_servers,
+            "2": ExternalServersManager.view_external_server_details,
+            "3": ExternalServersManager.update_external_server,
+            "4": CategoryManager.add_news_category,
+            "5": ReportManagementManager.view_reported_articles,
+            "6": lambda: KeywordsMenu().show(),
+            "7": CategoryManager.hide_unhide_article,
+            "8": CategoryManager.hide_unhide_category,
+            "9": BlockedKeywordsManager.add_blocked_keyword,
+            "10": BlockedKeywordsManager.view_blocked_keywords
+        }
 
-        if choice == "1":
-            view_all_external_servers()
-        elif choice == "2":
-            view_external_server_details()
-        elif choice == "3":
-            update_external_server()
-        elif choice == "4":
-            add_news_category()
-        elif choice == "5":
-            view_reported_articles()
-        elif choice == "6":
-            hide_unhide_article()
-        elif choice == "7":
-            hide_unhide_category()
-        elif choice == "8":
-            add_blocked_keyword()
-        elif choice == "9":
-            view_blocked_keywords()
-        elif choice == "10":
-            print("Admin logged out successfully.")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+    def show(self):
+        while True:
+            print("\n=== Admin Menu ===")
+            for option in ADMIN_MENU_OPTIONS:
+                print(option)
+
+            choice = input("Select an option: ").strip()
+
+            if choice == "11":
+                print(msg.ADMIN_LOGOUT_SUCCESS)
+                break
+            elif choice in self.menu_actions:
+                self.menu_actions[choice]()
+            else:
+                print(msg.ADMIN_INVALID_CHOICE)

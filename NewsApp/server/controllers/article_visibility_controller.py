@@ -1,45 +1,48 @@
-# currently working
-from flask import request, jsonify
-from flask_jwt_extended import get_jwt_identity
-from services.article_visibility_service import ArticleModerationService
+from services.article_visibility_service import ArticleVisibilityService
+from utils.exception_handler import handle_exceptions
+from constants import messages
+from http import HTTPStatus
+from utils.response_utils import error_response
+from controllers.base_controller import BaseController
 
-moderation_service = ArticleModerationService()
+class ArticleVisibilityController(BaseController):
+    def __init__(self):
+        super().__init__()
+        self.article_visibility_service = ArticleVisibilityService()
 
-class ArticleModerationController:
-
+    @handle_exceptions()
     def report_article(self, article_id):
-        user_id = get_jwt_identity()
-        reason = request.json.get("reason")
-        if not reason:
-            return jsonify({"message": "Reason is required"}), 400
-        success = moderation_service.report_article(user_id, article_id, reason)
-        return (jsonify({"message": "Reported"}), 200) if success else (jsonify({"message": "Error"}), 500)
+        user_id = self._get_user_id()
+        data, error = self._validate_json_data(required_fields=["reason"])
+        if error or data is None:
+            return error if error else error_response(messages.MISSING_REQUIRED_FIELDS, HTTPStatus.BAD_REQUEST)
+        reason = data["reason"]
+        return self.article_visibility_service.report_article(article_id, user_id, reason)
 
-    def get_reported_articles(self):
-        return jsonify({"data": moderation_service.get_reported_articles()})
+    @handle_exceptions()
+    def get_all_reported_articles(self):
+        return self.article_visibility_service.get_all_reported_articles()
 
-    def hide_article(self, article_id):
-        moderation_service.set_article_visibility(article_id, hide=True)
-        return jsonify({"message": "Article hidden"})
+    @handle_exceptions()
+    def toggle_article_visibility(self, article_id, action):
+        return self.article_visibility_service.toggle_article_visibility(article_id, action)
 
-    def unhide_article(self, article_id):
-        moderation_service.set_article_visibility(article_id, hide=False)
-        return jsonify({"message": "Article visible"})
+    @handle_exceptions()
+    def toggle_category_visibility(self, category_id, action):
+        return self.article_visibility_service.toggle_category_visibility(category_id, action)
 
-    def hide_category(self, category_id):
-        moderation_service.set_category_visibility(category_id, hide=True)
-        return jsonify({"message": "Category hidden"})
-
-    def unhide_category(self, category_id):
-        moderation_service.set_category_visibility(category_id, hide=False)
-        return jsonify({"message": "Category visible"})
-
+    @handle_exceptions()
     def add_blocked_keyword(self):
-        keyword = request.json.get("keyword")
-        if not keyword:
-            return jsonify({"message": "Keyword required"}), 400
-        moderation_service.add_blocked_keyword(keyword)
-        return jsonify({"message": "Keyword blocked"})
+        data, error = self._validate_json_data(required_fields=["keyword"])
+        if error or data is None:
+            return error if error else error_response(messages.MISSING_REQUIRED_FIELDS, HTTPStatus.BAD_REQUEST)
+        keyword = data["keyword"]
+        return self.article_visibility_service.add_blocked_keyword(keyword)
 
+    @handle_exceptions()
     def get_blocked_keywords(self):
-        return jsonify({"data": moderation_service.get_blocked_keywords()})
+        return self.article_visibility_service.get_blocked_keywords()
+
+    @handle_exceptions()
+    def delete_blocked_keyword(self, keyword_id):
+        return self.article_visibility_service.delete_blocked_keyword(keyword_id)

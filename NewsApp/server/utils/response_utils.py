@@ -1,15 +1,12 @@
 from flask import jsonify
-from http import HTTPStatus
 
-def success_response(data=None, message="Success", status=HTTPStatus.OK):
-    return jsonify({
-        "success": True,
-        "message": message,
-        "data": data
-    }), status
+def success_response(data=None, message=None, status=200):
+    response = {}
+    if message:
+        response["message"] = message
+    if data is not None:
+        response["data"] = data
+    return jsonify(response), status
 
-def error_response(message="Something went wrong", status=HTTPStatus.BAD_REQUEST):
-    return jsonify({
-        "success": False,
-        "message": message
-    }), status
+def error_response(message, status):
+    return jsonify({"error": message}), status

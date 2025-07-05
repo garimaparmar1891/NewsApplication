@@ -1,0 +1,30 @@
+tags:
+  - Article Visibility
+summary: Unblock (delete) a blocked keyword
+description: Allows an admin to unblock (delete) a blocked keyword by its ID. If unblocked, articles previously hidden by this keyword will be unhidden only if they are not reported and their category is not hidden.
+parameters:
+  - in: path
+    name: keyword_id
+    required: true
+    schema:
+      type: integer
+    description: The ID of the blocked keyword to delete/unblock.
+responses:
+  '200':
+    description: Keyword unblocked and articles updated
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Keyword unblocked and articles updated
+  '400':
+    description: Bad request
+  '401':
+    description: Unauthorized
+  '403':
+    description: Admin access required
+  '404':
+    description: Keyword not found 

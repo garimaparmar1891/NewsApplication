@@ -1,12 +1,14 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from services.external_news_service import ExternalNewsService
+from services.external_news.external_news_service import ExternalNewsService
 from config.config import Config
 import atexit
 import logging
+from utils.exception_handler import handle_exceptions
 
 logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
 
+@handle_exceptions()
 def start_scheduled_jobs():
     config = Config()
     news_service = ExternalNewsService()

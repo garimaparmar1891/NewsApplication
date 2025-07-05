@@ -1,49 +1,49 @@
 from flask import Blueprint
-from flask_jwt_extended import jwt_required
-from controllers.article_visibility_controller import ArticleModerationController
-from utils.auth_decorators import admin_required
+from flasgger import swag_from
+from controllers.article_visibility_controller import ArticleVisibilityController
+from utils.auth_decorators import admin_required, user_required
 
-article_visibility_bp = Blueprint("moderation", __name__)
-controller = ArticleModerationController()
+article_visibility_bp = Blueprint("article_visibility", __name__)
+article_visibility_controller = ArticleVisibilityController()
 
-# ---------- User report ---------
-@article_visibility_bp.route("/api/articles/<int:article_id>/report", methods=["POST"])
-@jwt_required()
+@article_visibility_bp.route("/api/article-visibility/report/<int:article_id>", methods=["POST"])
+@user_required
+@swag_from("../docs/article_visibility/report_article.yml")
 def report_article(article_id):
-    return controller.report_article(article_id)
+    return article_visibility_controller.report_article(article_id)
 
-# -------- Admin-only endpoints ----------
-@article_visibility_bp.route("/api/admin/reports", methods=["GET"])
+@article_visibility_bp.route("/api/article-visibility/reports", methods=["GET"])
 @admin_required
-def get_reported_articles():
-    return controller.get_reported_articles()
+@swag_from("../docs/article_visibility/view_reports.yml")
+def get_all_reported_articles():
+    return article_visibility_controller.get_all_reported_articles()
 
-@article_visibility_bp.route("/api/admin/articles/<int:article_id>/hide", methods=["PATCH"])
+@article_visibility_bp.route("/api/article-visibility/articles/<int:article_id>/<string:action>", methods=["PATCH"])
 @admin_required
-def hide_article(article_id):
-    return controller.hide_article(article_id)
+@swag_from("../docs/article_visibility/toggle_article_visibility.yml")
+def toggle_article_visibility(article_id, action):
+    return article_visibility_controller.toggle_article_visibility(article_id, action)
 
-@article_visibility_bp.route("/api/admin/articles/<int:article_id>/unhide", methods=["PATCH"])
+@article_visibility_bp.route("/api/article-visibility/categories/<int:category_id>/<string:action>", methods=["PATCH"])
 @admin_required
-def unhide_article(article_id):
-    return controller.unhide_article(article_id)
+@swag_from("../docs/article_visibility/toggle_category_visibility.yml")
+def toggle_category_visibility(category_id, action):
+    return article_visibility_controller.toggle_category_visibility(category_id, action)
 
-@article_visibility_bp.route("/api/admin/categories/<int:category_id>/hide", methods=["PATCH"])
+@article_visibility_bp.route("/api/article-visibility/blocked-keywords", methods=["POST"])
 @admin_required
-def hide_category(category_id):
-    return controller.hide_category(category_id)
-
-@article_visibility_bp.route("/api/admin/categories/<int:category_id>/unhide", methods=["PATCH"])
-@admin_required
-def unhide_category(category_id):
-    return controller.unhide_category(category_id)
-
-@article_visibility_bp.route("/api/admin/blocked-keywords", methods=["POST"])
-@admin_required
+@swag_from("../docs/article_visibility/add_blocked_keyword.yml")
 def add_blocked_keyword():
-    return controller.add_blocked_keyword()
+    return article_visibility_controller.add_blocked_keyword()
 
-@article_visibility_bp.route("/api/admin/blocked-keywords", methods=["GET"])
+@article_visibility_bp.route("/api/article-visibility/blocked-keywords", methods=["GET"])
 @admin_required
-def list_blocked_keywords():
-    return controller.get_blocked_keywords()
+@swag_from("../docs/article_visibility/get_blocked_keywords.yml")
+def get_blocked_keywords():
+    return article_visibility_controller.get_blocked_keywords()
+
+@article_visibility_bp.route("/api/article-visibility/blocked-keywords/<int:keyword_id>", methods=["DELETE"])
+@admin_required
+@swag_from("../docs/article_visibility/delete_blocked_keyword.yml")
+def delete_blocked_keyword(keyword_id):
+    return article_visibility_controller.delete_blocked_keyword(keyword_id)

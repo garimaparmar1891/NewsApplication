@@ -1,0 +1,29 @@
+tags:
+  - Article Visibility
+summary: Block a keyword
+description: Allows an admin to block a keyword.
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        keyword:
+          type: string
+          example: "spoiler"
+responses:
+  '200':
+    description: Keyword blocked
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Keyword blocked
+  '400':
+    description: Bad request
+  '401':
+    description: Unauthorized

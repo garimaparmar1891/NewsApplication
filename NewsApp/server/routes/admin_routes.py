@@ -6,7 +6,6 @@ from utils.auth_decorators import admin_required
 admin_bp = Blueprint("admin", __name__)
 admin_controller = AdminController()
 
-# ---------- External Servers ----------
 @admin_bp.route("/api/admin/external-servers", methods=["GET"])
 @admin_required
 @swag_from("../docs/admin/get_external_servers.yml")
@@ -19,7 +18,6 @@ def get_external_servers():
 def update_external_server(server_id):
     return admin_controller.update_external_server(server_id)
 
-# ---------- Categories ----------
 @admin_bp.route("/api/admin/categories", methods=["GET"])
 @admin_required
 @swag_from("../docs/admin/get_categories.yml")
@@ -31,9 +29,3 @@ def get_categories():
 @swag_from("../docs/admin/add_category.yml")
 def add_category():
     return admin_controller.add_category()
-
-@admin_bp.route("/api/admin/categories/<int:category_id>/hide", methods=["PATCH"])
-@admin_required
-@swag_from("../docs/admin/hide_category.yml")
-def hide_category(category_id):
-    return admin_controller.hide_category(category_id)

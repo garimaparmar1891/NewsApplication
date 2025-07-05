@@ -1,0 +1,23 @@
+tags:
+  - Article Visibility
+summary: Hide or unhide a category
+description: Allows an admin to hide or unhide a category.
+parameters:
+  - name: category_id
+    in: path
+    required: true
+    schema:
+      type: integer
+  - name: action
+    in: path
+    required: true
+    schema:
+      type: string
+      enum: [hide, unhide]
+responses:
+  '200':
+    description: Category visibility updated
+  '400':
+    description: Bad request
+  '401':
+    description: Unauthorized

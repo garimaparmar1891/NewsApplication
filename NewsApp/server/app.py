@@ -9,12 +9,19 @@ from routes import (
     auth_bp, article_bp, user_bp, notification_bp,
     keyword_bp, admin_bp, reaction_bp, user_keyword_bp, article_visibility_bp
 )
+
 from dotenv import load_dotenv
-import os
+import sys
 
 load_dotenv()
 
 def create_app():
+    try:
+        Config.validate()
+    except ValueError as e:
+        print(f"Configuration Error: {e}")
+        sys.exit(1)
+
     app = Flask(__name__)
     
     app.config["SECRET_KEY"] = Config.SECRET_KEY
