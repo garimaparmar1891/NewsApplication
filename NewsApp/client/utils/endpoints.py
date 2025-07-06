@@ -25,8 +25,6 @@ GET_ALL_ARTICLES = "/api/articles"
 REACT_TO_ARTICLE = "/api/reactions/{article_id}/{reaction}"
 GET_USER_REACTIONS = "/api/reactions"
 DELETE_REACTION = "/api/reactions/{article_id}"
-LIKE_ARTICLE = "/api/reactions/{article_id}/like"
-DISLIKE_ARTICLE = "/api/reactions/{article_id}/dislike"
 
 # ------------------- Notification Endpoints -------------------
 GET_NOTIFICATIONS = "/api/notifications"
