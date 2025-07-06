@@ -2,7 +2,6 @@ from datetime import datetime
 from utils.token_storage import TokenStorage
 
 class HeaderUtils:
-    """Utility class for printing headers and user info."""
 
     @staticmethod
     def print_welcome_message():

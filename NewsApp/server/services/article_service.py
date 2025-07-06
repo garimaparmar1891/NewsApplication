@@ -35,13 +35,26 @@ class ArticleService(BaseService):
             formatted = self.recommendation_service.score_and_sort_articles(user_id, formatted)
         return self._respond_with_articles(formatted, messages.NO_HEADLINES_AVAILABLE)
 
-    def get_articles_by_range(self, date_range, category_name, user_id=None):
+    def get_articles_by_range(self, date_range, category_names, user_id=None):
         self._validate_date_range(date_range['start_date'], date_range['end_date'])
-        category_id = self._get_category_id(category_name)
+        
+        # Handle both single category (string) and multiple categories (list)
+        if isinstance(category_names, str):
+            category_names = [category_names]
+        elif category_names is None:
+            category_names = []
+        
+        # Get category IDs for all category names
+        category_ids = []
+        for category_name in category_names:
+            category_id = self._get_category_id(category_name)
+            if category_id:
+                category_ids.append(category_id)
+        
         articles = self.repo.get_articles_by_range(
             date_range['start_date'], 
             date_range['end_date'], 
-            category_id
+            category_ids
         )
         formatted = self._format_articles(articles)
         if user_id and formatted:

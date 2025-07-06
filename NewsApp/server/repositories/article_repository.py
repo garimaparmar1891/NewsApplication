@@ -23,10 +23,20 @@ class ArticleRepository:
             (like_keyword, like_keyword, start_date, end_date)
         )
 
-    def get_articles_by_range(self, start_date, end_date, category_id=None):
-        category_clause = "AND A.CategoryId = ?" if category_id else ""
+    def get_articles_by_range(self, start_date, end_date, category_ids=None):
+        if category_ids:
+            if len(category_ids) == 1:
+                category_clause = "AND A.CategoryId = ?"
+                params = [start_date, end_date, category_ids[0]]
+            else:
+                placeholders = ",".join(["?" for _ in category_ids])
+                category_clause = f"AND A.CategoryId IN ({placeholders})"
+                params = [start_date, end_date] + category_ids
+        else:
+            category_clause = ""
+            params = [start_date, end_date]
+            
         query = q.GET_ARTICLES_BY_RANGE_BASE.format(category_clause=category_clause)
-        params = [start_date, end_date] + ([category_id] if category_id else [])
         return fetch_all_query_with_params(
             query,
             self._format_article_row,

@@ -13,7 +13,9 @@ class KeywordService(BaseService):
 
     def get_all_keywords(self):
         keywords = self.repository.get_all_keywords()
-        return self._handle_empty_result(keywords, messages.KEYWORD_NOT_FOUND, HTTPStatus.NOT_FOUND)
+        if not keywords:
+            raise AppError(messages.KEYWORD_NOT_FOUND, HTTPStatus.NOT_FOUND)
+        return self._create_success_response(data=keywords)
 
     def add_keyword(self, word, category_id):
         self._validate_keyword_data(word, category_id)

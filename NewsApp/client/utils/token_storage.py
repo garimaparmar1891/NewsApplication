@@ -2,7 +2,6 @@ import json
 import os
 
 class TokenStorage:
-    """Handles saving and retrieving user tokens and info."""
 
     TOKEN_FILE = "token.txt"
     USER_FILE = "user_info.json"

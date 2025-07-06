@@ -44,11 +44,21 @@ class ArticleController(BaseController):
         if isinstance(date_params, tuple):
             return date_params
             
-        category_name = request.args.get("category")
+        # Handle both single category and multiple categories
+        categories_param = request.args.get("categories")
+        category_param = request.args.get("category")
+        category_names = []
+        
+        if categories_param:
+            # Split by comma and strip whitespace
+            category_names = [cat.strip() for cat in categories_param.split(",") if cat.strip()]
+        elif category_param:
+            # Single category parameter
+            category_names = [category_param.strip()] if category_param.strip() else []
         
         return self.article_service.get_articles_by_range(
             date_params, 
-            category_name, 
+            category_names, 
             user_id
         )
 

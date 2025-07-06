@@ -19,10 +19,14 @@ class ArticleVisibilityService(BaseService):
     def report_article(self, article_id, user_id, reason):
         self._validate_required_fields(article_id, user_id, reason, 
                                      error_message=messages.REPORT_FIELDS_REQUIRED)
-        
-        self.repo.add_report(article_id, user_id, reason)
-        self._process_article_report(article_id, user_id, reason)
-        return self._create_success_response(message=messages.ARTICLE_REPORTED_SUCCESS)
+        try:
+            self.repo.add_report(article_id, user_id, reason)
+            self._process_article_report(article_id, user_id, reason)
+            return self._create_success_response(message=messages.ARTICLE_REPORTED_SUCCESS)
+        except ValueError as e:
+            if "already reported" in str(e).lower():
+                raise AppError(str(e), HTTPStatus.CONFLICT)
+            raise
 
     def get_all_reported_articles(self):
         articles = self.repo.get_all_reported_articles()

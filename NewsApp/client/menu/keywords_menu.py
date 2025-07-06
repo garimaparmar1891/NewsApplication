@@ -1,24 +1,33 @@
-from features.admin.keyword.keywords_manager import KeywordsManager
+from features.handlers.admin.keywords_handler import KeywordsHandler
+from menu.menu_constants import (
+    KEYWORDS_MENU_OPTIONS, ADMIN_MENU_SELECT_PROMPT, 
+    ADMIN_INVALID_CHOICE, RETURN_TO_MAIN_MENU
+)
 
 class KeywordsMenu:
-    """Handles the keyword management menu for admin."""
 
     def show(self):
+        actions = {
+            "1": KeywordsHandler.add_keyword,
+            "2": KeywordsHandler.delete_keyword,
+            "3": KeywordsHandler.view_keywords,
+            "4": self._return_to_main_menu
+        }
+        
         while True:
-            print("\n--- Keyword Management ---")
-            print("1. Add Keyword")
-            print("2. Delete Keyword")
-            print("3. View Keywords")
-            print("4. Go to Main Menu")
-            choice = input("Select an option: ").strip()
-
-            if choice == "1":
-                KeywordsManager.add_keyword()
-            elif choice == "2":
-                KeywordsManager.delete_keyword()
-            elif choice == "3":
-                KeywordsManager.view_keywords()
-            elif choice == "4":
+            for option in KEYWORDS_MENU_OPTIONS:
+                print(option)
+            choice = input(ADMIN_MENU_SELECT_PROMPT).strip()
+            
+            if choice == "4":
+                actions[choice]()
                 break
+            action = actions.get(choice)
+            if action:
+                action()
             else:
-                print("Invalid option. Try again.")
+                print(ADMIN_INVALID_CHOICE)
+
+    @staticmethod
+    def _return_to_main_menu():
+        print(RETURN_TO_MAIN_MENU)

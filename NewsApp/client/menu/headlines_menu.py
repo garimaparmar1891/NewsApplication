@@ -1,19 +1,27 @@
-from features.articles.today_headlines.today_headlines_manager import TodayHeadlinesManager
-from features.articles.articles_by_range.articles_by_range_manager import ArticlesByRangeManager
-from features.categories.view_categories.view_categories_manager import CategoryManager
+from features.handlers.articles.today_headlines_handler import TodayHeadlinesHandler
+from features.handlers.articles.articles_by_range_handler import ArticlesByRangeHandler
+from features.handlers.categories.view_categories_handler import ViewCategoriesHandler
+from constants import messages as msg
+from utils.input_utils import get_non_empty_input
+from .menu_constants import (
+    HEADLINES_MENU_OPTIONS, HEADLINES_MENU_SELECT_PROMPT, RETURN_TO_MAIN_MENU, 
+    HEADLINES_MENU_INVALID_CHOICE
+)
 
 class HeadlinesMenu:
-    """Handles the headlines menu for articles."""
 
     def show(self):
         actions = {
-            "1": TodayHeadlinesManager.show_today_headlines,
-            "2": self._view_articles_by_range_and_category,
+            "1": TodayHeadlinesHandler.get_today_headlines,
+            "2": self._get_articles_by_range,
             "3": self._return_to_main_menu
         }
         while True:
-            self.print_headlines_menu()
-            choice = input("Select an option: ").strip()
+            print("\n")
+            for option in HEADLINES_MENU_OPTIONS:
+                print(option)
+            print("\n")
+            choice = input(HEADLINES_MENU_SELECT_PROMPT).strip()
             if choice == "3":
                 actions[choice]()
                 break
@@ -21,34 +29,22 @@ class HeadlinesMenu:
             if action:
                 action()
             else:
-                print("Invalid choice. Please try again.")
+                print(HEADLINES_MENU_INVALID_CHOICE)
 
     @staticmethod
-    def print_headlines_menu():
-        print("\n=== Headlines Menu ===")
-        print("1. View Today's Headlines")
-        print("2. View Articles by Date Range and Category")
-        print("3. Back to Main Menu")
-
-    @staticmethod
-    def _view_articles_by_range_and_category():
-        option_map = CategoryManager.display_categories()
-        if not option_map:
-            return
-        try:
-            choice = int(input("Select a category: ").strip())
-        except ValueError:
-            print("Invalid input. Please enter a number.")
-            return
-        selected = option_map.get(choice)
-        if not selected:
-            print("Invalid choice. Please try again.")
-            return
-        if selected == "all":
-            ArticlesByRangeManager.get_all_articles()
-        else:
-            ArticlesByRangeManager.get_articles_by_range(selected)
+    def _get_articles_by_range():
+        success, categories_data = ViewCategoriesHandler._fetch_categories()
+        if success and categories_data:
+            print("\nAvailable Categories:")
+            for category in categories_data:
+                if isinstance(category, dict) and 'Id' in category and 'Name' in category:
+                    print(f"ID: {category['Id']} - {category['Name']}")
+        start_date = get_non_empty_input(msg.ENTER_START_DATE_PROMPT)
+        end_date = get_non_empty_input(msg.ENTER_END_DATE_PROMPT)
+        cat = input("Enter category: ").strip()
+        categories = [cat] if cat else None
+        ArticlesByRangeHandler.get_articles_by_range(start_date, end_date, categories)
 
     @staticmethod
     def _return_to_main_menu():
-        print("Returning to main menu...")
+        print(RETURN_TO_MAIN_MENU)
