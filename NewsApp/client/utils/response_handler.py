@@ -3,7 +3,9 @@ from constants import messages as msg
 
 def handle_response(response, success_message, error_message):
     if response.ok:
+        print(success_message)
         return True, success_message
+    print(error_message)
     error = HttpClient.safe_json_get(response, "error", msg.UNKNOWN_ERROR)
     return False, error_message.format(error=error)
 

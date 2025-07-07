@@ -4,7 +4,7 @@ from constants.messages import (
     REACT_TO_ARTICLE_TITLE, USER_REACTIONS_TITLE, REMOVE_REACTION_TITLE,
     REACTION_INVALID, REACTION_PROMPT, REACTION_FAILED,
     REACTIONS_FETCH_FAILED, NO_REACTIONS_FOUND, REACTION_REMOVED,
-    REACTION_REMOVE_FAILED, REACTION_DISPLAY_FORMAT
+    REACTION_REMOVE_FAILED, REACTION_DISPLAY_FORMAT, REACTION_SUCCESS
 )
 
 class ArticleReactionsHandler:
@@ -66,7 +66,7 @@ class ArticleReactionsHandler:
     def _handle_reaction_response(response):
         try:
             if response.ok:
-                pass
+                print(REACTION_SUCCESS)
             else:
                 error_msg = response.json().get("error", response.text)
                 print(REACTION_FAILED.format(error_msg))
