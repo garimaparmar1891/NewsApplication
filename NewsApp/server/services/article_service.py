@@ -83,7 +83,9 @@ class ArticleService(BaseService):
         return self.repo.bulk_insert_articles(prepared_articles)
 
     def _respond_with_articles(self, articles, error_msg):
-        return self._handle_empty_result(articles, error_msg, HTTPStatus.NOT_FOUND)
+        if not articles:
+            return self._create_success_response(message=error_msg, status=404)
+        return self._create_success_response(data=articles)
 
     def _format_articles(self, articles):
         return [format_article_row(a) for a in articles] if articles else []
