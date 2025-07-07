@@ -15,6 +15,7 @@ class BlockedKeywordsMenu:
 
     def show(self):
         while True:
+            print("\n")
             print(BLOCKED_KEYWORDS_MENU_TITLE)
             for option in BLOCKED_KEYWORDS_MENU_OPTIONS:
                 print(option)

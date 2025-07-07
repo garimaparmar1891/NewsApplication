@@ -11,11 +11,7 @@ class SignupHandler:
         try:
             name, email, password = SignupHandler._get_user_details()
             success, message = SignupService.signup(email, password, name)
-            if success:
-                print("SUCCESS: " + message)
-            else:
-                print("FAILED: " + message)
-                
+
             return success, message
             
         except Exception as e:

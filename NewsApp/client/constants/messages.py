@@ -38,7 +38,8 @@ BLOCKED_KEYWORD_DELETE_SUCCESS = "Blocked keyword deleted successfully."
 BLOCKED_KEYWORD_DELETE_FAILED = "Failed to delete blocked keyword: {error}"
 BLOCKED_KEYWORD_INVALID_ID = "Invalid keyword ID. Please enter a number."
 BLOCKED_KEYWORD_DELETE_PROMPT = "Enter the ID of the blocked keyword to delete: "
-
+BLOCKED_KEYWORD_ADD_SUCCESS = "Keyword added successfully."
+BLOCKED_KEYWORD_ADD_FAILED = "Failed to add keyword."
 
 # =============================================================================
 # GENERIC ERROR MESSAGES
@@ -75,7 +76,7 @@ KEYWORDS_AVAILABLE_TITLE = "Available Keywords:"
 # CATEGORY MANAGEMENT MESSAGES
 # =============================================================================
 CATEGORY_NAME_EMPTY = "Category name cannot be empty."
-CATEGORY_ADD_SUCCESS = "Category '{name}' added successfully."
+CATEGORY_ADD_SUCCESS = "Category added successfully."
 CATEGORY_ADD_FAILED = "Failed to add category: {error}"
 CATEGORY_INVALID_ID = "Invalid ID. Must be a number."
 CATEGORY_NOT_FOUND = "No category found with ID {id}."

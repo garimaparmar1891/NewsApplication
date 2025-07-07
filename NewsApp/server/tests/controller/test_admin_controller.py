@@ -12,7 +12,9 @@ class TestAdminController:
     
     @pytest.fixture
     def admin_controller(self):
-        return AdminController()
+        controller = AdminController()
+        controller.admin_service = MagicMock()
+        return controller
     
     @pytest.fixture
     def mock_admin_service(self, admin_controller):

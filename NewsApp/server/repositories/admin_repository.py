@@ -11,6 +11,13 @@ class AdminRepository:
             error_msg=messages.DB_ERROR_GET_EXTERNAL_SERVERS
         )
 
+    def get_active_external_servers(self):
+        return fetch_all_query(
+            query=admin_queries.GET_ACTIVE_EXTERNAL_SERVERS,
+            row_mapper=self._map_external_server,
+            error_msg="Error fetching active external servers"
+        )
+
     def update_external_server(self, server_id, data):
         update_fields, params = self._build_update_params(data)
         if not update_fields:

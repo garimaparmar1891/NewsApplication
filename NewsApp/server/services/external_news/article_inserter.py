@@ -11,4 +11,12 @@ class ArticleInserter:
         return [], []
 
     def _filter_new_articles(self, articles):
-        return [article for article in articles if not self.article_repo.article_exists_by_title(article["title"])]
+        from scheduler.news_fetcher import format_published_at
+        return [
+            article for article in articles
+            if not self.article_repo.article_exists_duplicate(
+                article["title"],
+                article.get("url"),
+                format_published_at(article.get("published_at"))
+            )
+        ]

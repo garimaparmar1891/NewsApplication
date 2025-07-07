@@ -4,6 +4,7 @@ from config.config import Config
 import atexit
 import logging
 from utils.exception_handler import handle_exceptions
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
@@ -25,3 +26,10 @@ def start_scheduled_jobs():
     logger.info(f"Scheduled job 'fetch_news_job' every {config.FETCH_INTERVAL_HOURS} hour(s)")
     scheduler.start()
     atexit.register(scheduler.shutdown)
+
+def format_published_at(published_at):
+    try:
+        dt = datetime.fromisoformat(published_at.replace('Z', '+00:00'))
+        return dt.strftime('%Y-%m-%d %H:%M:%S')
+    except Exception:
+        return published_at

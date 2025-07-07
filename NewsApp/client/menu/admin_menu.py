@@ -30,6 +30,7 @@ class AdminMenu:
 
             if choice == "10":
                 print(ADMIN_LOGOUT_SUCCESS)
+                print("\n")
                 break
             elif choice in self.menu_actions:
                 self.menu_actions[choice]()

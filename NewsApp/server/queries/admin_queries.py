@@ -4,6 +4,13 @@ GET_EXTERNAL_SERVERS = """
     ORDER BY Name
 """
 
+GET_ACTIVE_EXTERNAL_SERVERS = """
+    SELECT Id, Name, ApiKey, BaseUrl, IsActive, LastAccessed
+    FROM ExternalServers
+    WHERE IsActive = 1
+    ORDER BY Name
+"""
+
 UPDATE_EXTERNAL_SERVER = """
     UPDATE ExternalServers
     SET {fields}

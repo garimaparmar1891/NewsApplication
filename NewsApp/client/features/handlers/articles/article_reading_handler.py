@@ -16,7 +16,6 @@ class ArticleReadingHandler:
     def handle_dislike_article(article_id):
         try:
             ArticleReadingService.dislike_article(article_id)
-            print("Article disliked successfully.")
         except Exception as e:
             print(f"Failed to dislike article: {e}")
 

@@ -62,8 +62,6 @@ class ExternalServerHandler:
                 msg.EXTERNAL_SERVER_UPDATE_SUCCESS,
                 msg.EXTERNAL_SERVER_UPDATE_FAILED
             )
-            
-            print(message)
             return success, message
         except Exception as e:
             print(f"Error occurred while updating external server: {str(e)}")

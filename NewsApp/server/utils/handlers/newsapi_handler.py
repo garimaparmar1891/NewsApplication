@@ -15,7 +15,6 @@ class NewsAPIHandler(BaseNewsHandler):
         self.page_size = page_size
 
     def fetch_articles(self, base_url, api_key, category):
-        print(NEWSAPI_REQUESTING_ARTICLES.format(category=category))
         return super().fetch_articles(base_url, api_key, category=category)
 
     def _build_request_params(self, api_key, **kwargs):

@@ -34,18 +34,9 @@ class CategoryHandler:
                 print(CATEGORY_NAME_EMPTY)
                 return False, CATEGORY_NAME_EMPTY
 
-            response = CategoriesService.add_category(category_name)
-            success, message = handle_response(
-                response,
-                CATEGORY_ADD_SUCCESS.format(name=category_name),
-                CATEGORY_ADD_FAILED
-            )
-            
-            if success:
-                print(message)
-            else:
-                print(message)
+            success, message = CategoriesService.add_category(category_name)
             return success, message
+
         except Exception as e:
             error_msg = f"An error occurred while adding category: {str(e)}"
             print(error_msg)

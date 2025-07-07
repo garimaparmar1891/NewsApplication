@@ -6,6 +6,15 @@ from flask import Flask
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+@pytest.fixture(autouse=True, scope="session")
+def patch_db_utils():
+    with patch("utils.db.get_db_connection"), \
+         patch("utils.db.execute_write_query"), \
+         patch("utils.db.fetch_one_query"), \
+         patch("utils.db.fetch_all_query"), \
+         patch("utils.db.fetch_all_query_with_params"):
+        yield
+
 @pytest.fixture
 def app():
     app = Flask(__name__)

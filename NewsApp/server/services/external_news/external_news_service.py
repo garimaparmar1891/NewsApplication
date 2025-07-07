@@ -31,40 +31,42 @@ class ExternalNewsService(BaseService):
         self.notification_manager = NotificationManager(self.notification_repo, self.notification_service)
 
     def fetch_and_store_all(self):
-        sources = self.admin_repo.get_external_servers()
+        sources = self.admin_repo.get_active_external_servers()
         total_inserted = 0
         user_notification_count = {}
-        articles_found = False
+        articles_found = False  
         active_sources_tried = 0
+
+        seen_articles = set()
 
         for source in sources:
             if not source.get("is_active"):
                 continue
                 
             active_sources_tried += 1
-            print(FETCHING_FROM_SOURCE.format(name=source.get('name')))
+            print(f"Running API: {source.get('name')}")
             articles = self.article_fetcher.fetch(source)
-            
-            if articles:
+
+            unique_articles = []
+            for article in articles or []:
+                key = (article.get("title"), article.get("url"), article.get("published_at"))
+                if key not in seen_articles:
+                    unique_articles.append(article)
+                    seen_articles.add(key)
+
+            if unique_articles:
                 articles_found = True
-                inserted_ids, new_articles = self.article_inserter.insert(articles)
+                inserted_ids, new_articles = self.article_inserter.insert(unique_articles)
                 total_inserted += len(inserted_ids)
-                
-                if inserted_ids:
-                    print(INSERTED_ARTICLES_FROM_SOURCE.format(count=len(inserted_ids), name=source.get('name')))
-                
                 if inserted_ids and new_articles:
                     self.notification_manager.check_and_notify_users(new_articles, user_notification_count)
+                break
             else:
                 continue
 
         if articles_found:
+            print(f"Total articles inserted: {total_inserted}")
             self._log_summary(total_inserted, user_notification_count)
 
     def _log_summary(self, total_inserted, user_notification_count):
-        if total_inserted:
-            print(f"Total articles inserted: {total_inserted}")
-        if user_notification_count:
-            print("Notification summary:")
-            for email, count in user_notification_count.items():
-                print(f" - {email}: {count} articles notified")
+        pass

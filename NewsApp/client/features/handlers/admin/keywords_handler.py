@@ -20,8 +20,7 @@ class KeywordsHandler:
             
             response = KeywordsService.add_keyword(word, category_id)
             success, message = handle_response(response, msg.KEYWORD_ADD_SUCCESS, msg.KEYWORD_ADD_FAILED)
-            
-            print(message)
+
             return success, message
             
         except Exception as e:
@@ -39,7 +38,6 @@ class KeywordsHandler:
             
             success, message = handle_response(response, msg.KEYWORD_DELETE_SUCCESS, msg.KEYWORD_DELETE_FAILED)
             
-            print(message)
             return success, message
             
         except Exception as e:
