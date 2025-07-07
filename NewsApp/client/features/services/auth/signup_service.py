@@ -9,7 +9,7 @@ class SignupService:
         response = HttpClient.authorized_request(
             method="POST",
             endpoint=SIGNUP,
-            json={"email": email, "password": password, "name": name}
+            json={"email": email, "password": password, "username": name}
         )
         return handle_response(
             response,

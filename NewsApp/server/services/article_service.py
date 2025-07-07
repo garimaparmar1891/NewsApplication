@@ -84,7 +84,7 @@ class ArticleService(BaseService):
 
     def _respond_with_articles(self, articles, error_msg):
         if not articles:
-            return self._create_success_response(message=error_msg, status=404)
+            return self._create_success_response(message=error_msg)
         return self._create_success_response(data=articles)
 
     def _format_articles(self, articles):

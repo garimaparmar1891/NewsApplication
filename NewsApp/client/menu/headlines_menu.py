@@ -18,6 +18,7 @@ class HeadlinesMenu:
         }
         while True:
             print("\n")
+            print("--- Headlines ---")
             for option in HEADLINES_MENU_OPTIONS:
                 print(option)
             print("\n")

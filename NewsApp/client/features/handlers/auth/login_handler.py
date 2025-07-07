@@ -31,8 +31,8 @@ class LoginHandler:
         
         try:
             success, data = LoginService.login(email, password)
-            
             if not success:
+                print("Invalid email or password. Please try again.\n")
                 return None
                 
             if LoginHandler._is_valid_response(data):

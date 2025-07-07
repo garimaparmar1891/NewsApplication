@@ -10,8 +10,7 @@ class SignupHandler:
     def signup():
         try:
             name, email, password = SignupHandler._get_user_details()
-            success, message = SignupService.signup(name, email, password)
-            
+            success, message = SignupService.signup(email, password, name)
             if success:
                 print("SUCCESS: " + message)
             else:
