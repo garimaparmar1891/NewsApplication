@@ -56,4 +56,4 @@ class TestArticleFetcher:
         assert self.fetcher._is_blocked("block this")
 
     def test_is_blocked_false(self):
-        assert not self.fetcher._is_blocked("allow this") 
+        assert not self.fetcher._is_blocked("allow this")

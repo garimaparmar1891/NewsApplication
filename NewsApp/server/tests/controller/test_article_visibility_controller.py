@@ -92,4 +92,4 @@ class TestArticleVisibilityController:
             mock_service.delete_blocked_keyword.return_value = (jsonify({"message": messages.BLOCKED_KEYWORD_DELETED}), 200)
             response, status = controller.delete_blocked_keyword(789)
             assert status == 200
-            assert response.get_json() == {"message": messages.BLOCKED_KEYWORD_DELETED} 
+            assert response.get_json() == {"message": messages.BLOCKED_KEYWORD_DELETED}

@@ -129,10 +129,10 @@ REPORTED_ARTICLES_FETCH_FAILED = "Failed to fetch reported articles: {error}"
 # =============================================================================
 # AUTHENTICATION MESSAGES
 # =============================================================================
-LOGIN_FAILED = "Login failed: {}"
+LOGIN_FAILED = "Login failed. Please check your credentials and try again."
 
 SIGNUP_SUCCESS = "Signup successful. Please Login!"
-SIGNUP_FAILED = "Signup failed: {error}"
+SIGNUP_FAILED = "Signup failed. Please check your details and try again. Error: {error}"
 
 
 # =============================================================================

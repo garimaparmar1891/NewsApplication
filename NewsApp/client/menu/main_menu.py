@@ -31,6 +31,7 @@ class MainMenu:
                         self.user_menu.show()
             elif choice == "2":
                 self.signup_handler.signup()
+
                 print(MAIN_MENU_LOGIN_PROMPT)
             elif choice == "3":
                 print(MAIN_MENU_EXIT_MESSAGE)

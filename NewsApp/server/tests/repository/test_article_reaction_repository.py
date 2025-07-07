@@ -47,4 +47,4 @@ class TestArticleReactionRepository:
     def test_map_reaction_row_returns_correct_structure(self, repository, mock_reaction_row):
         result = repository._map_reaction_row(mock_reaction_row)
         
-        assert result['article_id'] == 1 
+        assert result['article_id'] == 1

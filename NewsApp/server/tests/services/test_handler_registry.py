@@ -18,4 +18,4 @@ class TestHandlerRegistry:
     def test_get_handler_returns_thenewsapi_handler(self):
         registry = HandlerRegistry()
         handler = registry.get_handler("thenewsapi")
-        assert handler.__class__.__name__ == "TheNewsAPIHandler" 
+        assert handler.__class__.__name__ == "TheNewsAPIHandler"

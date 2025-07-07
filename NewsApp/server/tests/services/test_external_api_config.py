@@ -33,4 +33,4 @@ class TestExternalAPIConfig:
             {"name": "newsapi", "api_key": "test_newsapi_key"}
         ]
         config = ExternalAPIConfig()
-        assert config.THENEWSAPI_TOKEN is None 
+        assert config.THENEWSAPI_TOKEN is None

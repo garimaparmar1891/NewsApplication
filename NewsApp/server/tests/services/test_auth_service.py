@@ -259,4 +259,4 @@ class TestAuthService:
             mock_create_token.return_value = 'test_token'
             auth_service._generate_token(sample_user_data)
         
-        mock_create_token.assert_called_once() 
+        mock_create_token.assert_called_once()

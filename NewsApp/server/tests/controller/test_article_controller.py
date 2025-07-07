@@ -91,4 +91,4 @@ class TestArticleController:
         
         result = article_controller.record_article_read(article_id)
         
-        assert result == expected_response 
+        assert result == expected_response

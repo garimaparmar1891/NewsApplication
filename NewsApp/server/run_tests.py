@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
-"""
-Test runner script for the News Application server
-"""
-
 import subprocess
 import sys
 import os
 import argparse
 
 def run_tests(args):
-    """Run pytest with the given arguments"""
     cmd = ["python", "-m", "pytest"]
     
     if args.verbose:
@@ -37,10 +32,10 @@ def run_tests(args):
     
     try:
         result = subprocess.run(cmd, check=True)
-        print("\n✅ All tests passed!")
+        print("\nAll tests passed!")
         return 0
     except subprocess.CalledProcessError as e:
-        print(f"\n❌ Tests failed with exit code {e.returncode}")
+        print(f"\nTests failed with exit code {e.returncode}")
         return e.returncode
 
 def main():
@@ -55,7 +50,6 @@ def main():
     
     args = parser.parse_args()
     
-    # Change to the server directory
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     
     return run_tests(args)

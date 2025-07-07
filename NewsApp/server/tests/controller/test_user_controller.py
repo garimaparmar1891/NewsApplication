@@ -57,4 +57,4 @@ class TestUserController:
     def test_unsave_article_calls_service(self, user_controller, mock_user_service, mock_get_user_id):
         article_id = 4
         user_controller.unsave_article(article_id)
-        mock_user_service.unsave_article.assert_called_once_with(1, article_id) 
+        mock_user_service.unsave_article.assert_called_once_with(1, article_id)

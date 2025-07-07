@@ -21,4 +21,4 @@ class TestLoginHistoryRepository:
             login_history_queries.RECORD_LOGIN, 
             (user_id,), 
             messages.DB_ERROR_RECORD_LOGIN
-        ) 
+        )

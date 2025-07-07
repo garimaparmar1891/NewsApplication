@@ -289,4 +289,4 @@ class TestArticleService:
         article_service.bulk_insert_articles(articles)
         
         mock_article_repository.get_blocked_keywords.assert_called_once()
-        mock_article_repository.bulk_insert_articles.assert_called_once() 
+        mock_article_repository.bulk_insert_articles.assert_called_once()

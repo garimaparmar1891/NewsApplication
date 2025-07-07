@@ -15,7 +15,7 @@ class SignupHandler:
             return success, message
             
         except Exception as e:
-            error_message = f"Signup failed due to an unexpected error: {str(e)}"
+            error_message = f"Signup failed due to an unexpected error. Please try again later. Error: {str(e)}"
             return False, error_message
 
     @staticmethod
@@ -26,5 +26,5 @@ class SignupHandler:
             password = get_non_empty_input(SIGNUP_PASSWORD_PROMPT)
             return name, email, password
         except Exception as e:
-            error_message = f"Failed to get user details: {str(e)}"
+            error_message = f"Failed to get user details. Please check your input and try again. Error: {str(e)}"
             raise Exception(error_message)

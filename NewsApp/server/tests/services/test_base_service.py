@@ -75,4 +75,4 @@ class TestBaseService:
             base_service._handle_empty_result(result, "Not found")
         
         assert exc_info.value.message == "Not found"
-        assert exc_info.value.status_code == HTTPStatus.NOT_FOUND 
+        assert exc_info.value.status_code == HTTPStatus.NOT_FOUND

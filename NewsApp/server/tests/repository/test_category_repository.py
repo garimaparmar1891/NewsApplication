@@ -21,4 +21,4 @@ class TestCategoryRepository:
         
         result = category_repository.get_category_by_name("Technology")
         
-        assert result == {"Id": 1, "Name": "Technology"} 
+        assert result == {"Id": 1, "Name": "Technology"}

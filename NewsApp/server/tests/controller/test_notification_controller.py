@@ -31,4 +31,4 @@ class TestNotificationController:
         result = self.controller.get_user_preferences()
 
         assert result == expected_response
-        self.mock_service.get_user_preferences.assert_called_once_with(1) 
+        self.mock_service.get_user_preferences.assert_called_once_with(1)

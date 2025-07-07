@@ -1,6 +1,6 @@
 # === Auth Messages ===
 USER_ALREADY_EXISTS = "User already exists"
-USER_REGISTERED = "User registered successfully"
+USER_REGISTERED = "User registered successfully. Pleae Login!"
 INVALID_CREDENTIALS = "Invalid credentials"
 INVALID_EMAIL_FORMAT = "Invalid email format. Please provide a valid email address."
 REQUIRED_SIGNUP_FIELDS = ["username", "email", "password"]

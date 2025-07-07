@@ -103,4 +103,4 @@ def test_default_strategies_returns_list():
 
 def test_default_strategies_length():
     strategies = ArticleScorer.default_strategies()
-    assert len(strategies) == 7 
+    assert len(strategies) == 7

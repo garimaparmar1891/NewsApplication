@@ -140,4 +140,4 @@ class TestNotificationRepository:
         
         result = notification_repository.get_last_login(1)
         
-        assert result is None 
+        assert result is None

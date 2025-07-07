@@ -60,4 +60,4 @@ def test__extract_sorted_articles_empty(service):
 def test__extract_sorted_articles_single(service):
     scored = [(3, {'id': 1})]
     result = service._extract_sorted_articles(scored)
-    assert result[0]['id'] == 1 
+    assert result[0]['id'] == 1

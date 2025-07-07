@@ -55,4 +55,4 @@ class TestAuthRepository:
         
         result = auth_repository.get_admin_email()
         
-        assert result == "admin@example.com" 
+        assert result == "admin@example.com"

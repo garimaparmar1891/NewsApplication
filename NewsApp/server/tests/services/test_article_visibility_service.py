@@ -278,4 +278,4 @@ class TestArticleVisibilityService:
         mock_article_visibility_repository.is_keyword_blocked.return_value = False
         article_visibility_service.is_article_blocked('test content')
         
-        mock_article_visibility_repository.is_keyword_blocked.assert_called_once_with('test content') 
+        mock_article_visibility_repository.is_keyword_blocked.assert_called_once_with('test content')

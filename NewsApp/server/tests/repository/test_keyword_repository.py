@@ -45,4 +45,4 @@ class TestKeywordRepository:
     def test_map_keyword_row_returns_correct_structure(self, keyword_repository, mock_keyword_row):
         result = keyword_repository._map_keyword_row(mock_keyword_row)
         
-        assert result['id'] == 1 
+        assert result['id'] == 1

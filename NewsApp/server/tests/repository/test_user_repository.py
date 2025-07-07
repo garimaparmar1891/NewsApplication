@@ -108,4 +108,4 @@ class TestUserRepository:
         result = user_repository._map_row_to_dict(mock_saved_article_row)
         
         assert isinstance(result, dict)
-        assert result['Id'] == 1 
+        assert result['Id'] == 1

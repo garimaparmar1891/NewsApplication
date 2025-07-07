@@ -106,4 +106,4 @@ class TestArticleReactionService:
         response, status_code = article_reaction_service.get_user_disliked_articles(1)
         
         assert len(response.json['data']) == 1
-        assert response.json['data'][0]['ArticleId'] == 2 
+        assert response.json['data'][0]['ArticleId'] == 2

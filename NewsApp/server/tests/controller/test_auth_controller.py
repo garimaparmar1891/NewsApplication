@@ -33,4 +33,4 @@ class TestAuthController:
         
         with app.test_request_context(json=login_data):
             result = auth_controller.login()
-            assert result == expected_response 
+            assert result == expected_response

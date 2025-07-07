@@ -239,4 +239,4 @@ class TestAdminController:
                         assert status_code == 500
                     else:
                         assert result["error"] == "Unexpected server error"
-                        assert result["status_code"] == 500 
+                        assert result["status_code"] == 500

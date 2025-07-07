@@ -71,4 +71,5 @@ class TestAdminService:
             admin_service.add_category("Technology")
         
         assert exc_info.value.message == messages.CATEGORY_ADD_FAILED
-        assert exc_info.value.status_code == HTTPStatus.INTERNAL_SERVER_ERROR 
+        assert exc_info.value.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
+ 

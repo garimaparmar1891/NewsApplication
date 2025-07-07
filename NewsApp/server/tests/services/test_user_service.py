@@ -53,4 +53,4 @@ class TestUserService:
         service = UserService()
         with pytest.raises(AppError) as exc:
             service.unsave_article(1, 2)
-        assert str(exc.value) == messages.ARTICLE_NOT_SAVED 
+        assert str(exc.value) == messages.ARTICLE_NOT_SAVED

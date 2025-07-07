@@ -58,4 +58,4 @@ class TestUserKeywordRepository:
         
         result = user_keyword_repository.get_user_keywords_map(1)
         
-        assert result[1] == ["ai"] 
+        assert result[1] == ["ai"]

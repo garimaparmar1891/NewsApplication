@@ -139,4 +139,4 @@ class TestAdminRepository:
     def test_map_keyword_returns_correct_structure(self, admin_repository, mock_keyword_row):
         result = admin_repository._map_keyword(mock_keyword_row)
         
-        assert result['id'] == 1 
+        assert result['id'] == 1

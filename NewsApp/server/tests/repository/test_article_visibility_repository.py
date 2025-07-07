@@ -203,4 +203,4 @@ class TestArticleVisibilityRepository:
         
         repository.unhide_articles_after_keyword_removal()
         
-        mock_cursor.execute.assert_called_with(q.UNHIDE_ARTICLE, (1,)) 
+        mock_cursor.execute.assert_called_with(q.UNHIDE_ARTICLE, (1,))

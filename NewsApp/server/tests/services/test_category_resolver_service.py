@@ -39,4 +39,4 @@ class TestCategoryResolver:
 
     def test_find_category_by_keywords_returns_default(self):
         combined_text = "no match"
-        assert self.resolver._find_category_by_keywords(combined_text) == 1 
+        assert self.resolver._find_category_by_keywords(combined_text) == 1

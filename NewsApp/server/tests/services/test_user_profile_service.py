@@ -118,4 +118,4 @@ class TestUserProfileLoader:
     def test_fetch_enabled_categories_none_repo(self):
         self.loader.notification_repo = None
         result = self.loader._fetch_enabled_categories(1)
-        assert result == set() 
+        assert result == set()

@@ -11,8 +11,10 @@ class SignupService:
             endpoint=SIGNUP,
             json={"email": email, "password": password, "username": name}
         )
+        message = HttpClient.safe_json_get(response, "message", SIGNUP_SUCCESS)
+        error = HttpClient.safe_json_get(response, "error", SIGNUP_FAILED)
         return handle_response(
             response,
-            SIGNUP_SUCCESS,
-            SIGNUP_FAILED
+            message,
+            error
         )

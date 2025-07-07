@@ -471,4 +471,4 @@ class TestArticleRepository:
     def test_prepare_article_data_maps_is_hidden_correctly(self, article_repository, sample_article_data):
         result = article_repository._prepare_article_data(sample_article_data)
         
-        assert result[7] == 0 
+        assert result[7] == 0

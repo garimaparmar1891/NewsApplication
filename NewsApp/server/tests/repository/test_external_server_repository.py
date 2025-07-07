@@ -28,4 +28,4 @@ class TestExternalServerRepository:
 
         result = external_server_repository.get_keys()
 
-        assert result[0]["name"] == "NewsAPI" 
+        assert result[0]["name"] == "NewsAPI"

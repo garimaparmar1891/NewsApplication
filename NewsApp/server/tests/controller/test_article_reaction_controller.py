@@ -40,4 +40,4 @@ class TestArticleReactionController:
         
         result = article_reaction_controller.get_user_reactions()
         
-        assert result == expected_response 
+        assert result == expected_response

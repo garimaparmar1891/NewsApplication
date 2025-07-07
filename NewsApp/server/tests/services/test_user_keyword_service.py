@@ -56,4 +56,4 @@ class TestUserKeywordService:
     def test_insert_keyword_no_raise(self):
         self.repo.insert_user_keyword.return_value = 1
         self.service._insert_keyword(1, 1, 'test')
-        assert True 
+        assert True

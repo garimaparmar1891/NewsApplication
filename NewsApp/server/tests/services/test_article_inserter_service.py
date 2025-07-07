@@ -19,4 +19,4 @@ class TestArticleInserter:
         articles = [{"title": "A"}]
         self.mock_repo.article_exists_by_title.return_value = True
         result = self.inserter._filter_new_articles(articles)
-        assert result == [] 
+        assert result == []
